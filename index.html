@@ -1,0 +1,2375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Association Counter</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --bg-panel: #0a0a0a;
+    --surface: #1a1a1a;
+    --border: #222;
+    --border-light: #333;
+    --text: #e0e0e0;
+    --text-muted: #999;
+    --text-dim: #666;
+    --text-dimmer: #555;
+    --text-dimmest: #444;
+    --accent: #ffffff;
+    --accent-muted: #999;
+    --ring-bg: #1a1a1a;
+    --ring-stroke: #ffffff;
+    --hit-flash: rgba(255, 255, 255, 0.03);
+    --score-green: #4ade80;
+    --score-blue: #6b8aed;
+    --score-pink: #e879a8;
+    --score-gold: #d4a54a;
+  }
+
+  [data-theme="midnight"] {
+    --bg: #0b1426;
+    --bg-panel: #070f1e;
+    --surface: #122040;
+    --border: #1a2d55;
+    --border-light: #243a6a;
+    --text: #c8d6ef;
+    --text-muted: #8899bb;
+    --text-dim: #5a6d8f;
+    --text-dimmer: #4a5d7f;
+    --text-dimmest: #3a4d6f;
+    --accent: #e0ecff;
+    --accent-muted: #7a8fbb;
+    --ring-bg: #122040;
+    --ring-stroke: #5b8af0;
+    --hit-flash: rgba(91, 138, 240, 0.05);
+    --score-green: #4ade80;
+    --score-blue: #5b8af0;
+    --score-pink: #e879a8;
+    --score-gold: #d4a54a;
+  }
+
+  [data-theme="ember"] {
+    --bg: #1a0f0a;
+    --bg-panel: #140b07;
+    --surface: #2a1810;
+    --border: #3a2218;
+    --border-light: #4a3020;
+    --text: #ebd5c8;
+    --text-muted: #b08870;
+    --text-dim: #7a5e4a;
+    --text-dimmer: #6a4e3a;
+    --text-dimmest: #5a3e2a;
+    --accent: #ffddcc;
+    --accent-muted: #b08870;
+    --ring-bg: #2a1810;
+    --ring-stroke: #e8734a;
+    --hit-flash: rgba(232, 115, 74, 0.05);
+    --score-green: #7ecc6a;
+    --score-blue: #6b9eed;
+    --score-pink: #e8734a;
+    --score-gold: #d4a54a;
+  }
+
+  [data-theme="forest"] {
+    --bg: #0a1410;
+    --bg-panel: #070f0c;
+    --surface: #122a1e;
+    --border: #1a3a28;
+    --border-light: #244a34;
+    --text: #c8e8d6;
+    --text-muted: #7aaa8e;
+    --text-dim: #4a7a62;
+    --text-dimmer: #3a6a52;
+    --text-dimmest: #2a5a42;
+    --accent: #d0f0e0;
+    --accent-muted: #7aaa8e;
+    --ring-bg: #122a1e;
+    --ring-stroke: #4ade80;
+    --hit-flash: rgba(74, 222, 128, 0.05);
+    --score-green: #4ade80;
+    --score-blue: #6bb8ed;
+    --score-pink: #e879a8;
+    --score-gold: #d4a54a;
+  }
+
+  [data-theme="violet"] {
+    --bg: #120f1a;
+    --bg-panel: #0d0a14;
+    --surface: #1e1830;
+    --border: #2a2244;
+    --border-light: #362e55;
+    --text: #dbd0ef;
+    --text-muted: #9988bb;
+    --text-dim: #6a5a8f;
+    --text-dimmer: #5a4a7f;
+    --text-dimmest: #4a3a6f;
+    --accent: #e8ddff;
+    --accent-muted: #9988bb;
+    --ring-bg: #1e1830;
+    --ring-stroke: #a47aee;
+    --hit-flash: rgba(164, 122, 238, 0.05);
+    --score-green: #4ade80;
+    --score-blue: #8a7aee;
+    --score-pink: #e879c8;
+    --score-gold: #d4a54a;
+  }
+
+  [data-theme="rose"] {
+    --bg: #1a0f14;
+    --bg-panel: #140a0f;
+    --surface: #2a1520;
+    --border: #3a2030;
+    --border-light: #4a2a3e;
+    --text: #ebd0dc;
+    --text-muted: #b07a90;
+    --text-dim: #7a4a60;
+    --text-dimmer: #6a3a50;
+    --text-dimmest: #5a2a40;
+    --accent: #ffdde8;
+    --accent-muted: #b07a90;
+    --ring-bg: #2a1520;
+    --ring-stroke: #e8608a;
+    --hit-flash: rgba(232, 96, 138, 0.05);
+    --score-green: #4ade80;
+    --score-blue: #6b8aed;
+    --score-pink: #e8608a;
+    --score-gold: #d4a54a;
+  }
+
+  [data-theme="mono"] {
+    --bg: #141414;
+    --bg-panel: #0e0e0e;
+    --surface: #222;
+    --border: #2a2a2a;
+    --border-light: #3a3a3a;
+    --text: #d0d0d0;
+    --text-muted: #999;
+    --text-dim: #666;
+    --text-dimmer: #555;
+    --text-dimmest: #444;
+    --accent: #ffffff;
+    --accent-muted: #aaa;
+    --ring-bg: #222;
+    --ring-stroke: #ccc;
+    --hit-flash: rgba(255, 255, 255, 0.04);
+    --score-green: #bbb;
+    --score-blue: #999;
+    --score-pink: #aaa;
+    --score-gold: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    height: 100vh;
+    display: flex;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.4s ease, color 0.4s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    user-select: none;
+    overflow: hidden;
+  }
+
+  .panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-bottom: 8vh;
+  }
+
+  .panel-left {
+    border-right: 1px solid var(--border);
+    transition: background 0.15s ease-out;
+  }
+
+  .panel-left.hit {
+    background: var(--hit-flash);
+  }
+
+  .ring-wrapper {
+    position: relative;
+    width: min(70vh, 500px);
+    height: min(70vh, 500px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease-out;
+  }
+
+  .ring-wrapper.pop { transform: scale(1.03); }
+
+  .ring-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .ring-bg {
+    fill: none;
+    stroke: var(--ring-bg);
+    stroke-width: 6;
+  }
+
+  .ring-progress {
+    fill: none;
+    stroke: var(--ring-stroke);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 879.65;
+    stroke-dashoffset: 879.65;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+  }
+
+  .ring-progress.urgent { stroke: #ff6b6b; }
+
+  .ring-progress.done {
+    stroke: #ff6b6b;
+    animation: pulse-ring 0.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { stroke: #ff6b6b; }
+    50% { stroke: #ff2020; }
+  }
+
+  .number {
+    position: relative;
+    z-index: 1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: clamp(6rem, 15vw, 16rem);
+    font-weight: 100;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--accent);
+    transition: transform 0.08s ease-out;
+    font-variant-numeric: tabular-nums;
+  }
+
+  #timer { color: var(--accent-muted); }
+  .number.bump { transform: scale(1.04); }
+  .number.urgent { color: #ff6b6b; }
+  .number.done { animation: pulse-red 0.5s ease-in-out infinite; }
+
+  @keyframes pulse-red {
+    0%, 100% { color: #ff6b6b; }
+    50% { color: #ff2020; }
+  }
+
+  .flash { animation: flash-reset 0.3s ease-out; }
+
+  @keyframes flash-reset {
+    0%   { color: #ff6b6b; }
+    100% { color: var(--accent); }
+  }
+
+  .ring-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--text-dimmer);
+    margin-top: 1rem;
+  }
+
+  .ring-below {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--text-dimmer);
+    margin-bottom: 0.6rem;
+  }
+
+
+
+  .hints {
+    position: absolute;
+    bottom: 2rem;
+    display: flex;
+    gap: 2rem;
+    font-size: 0.8rem;
+    color: var(--text-dimmest);
+  }
+
+  .hints kbd {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-right: 0.4em;
+  }
+
+  .hints .enter-hint {
+    color: var(--text-muted);
+    transition: color 0.6s ease, opacity 0.6s ease;
+  }
+
+  .hints .enter-hint kbd {
+    color: var(--text-muted);
+    border-color: var(--text-dimmest);
+    animation: enter-glow 3s ease-in-out infinite;
+  }
+
+  .hints .enter-hint.faded {
+    color: var(--text-dimmest);
+  }
+
+  .hints .enter-hint.faded kbd {
+    color: var(--text-dim);
+    border-color: var(--border-light);
+    animation: none;
+  }
+
+  @keyframes enter-glow {
+    0%, 100% { border-color: var(--text-dimmest); color: var(--text-muted); }
+    50% { border-color: var(--text-dimmer); color: var(--text); }
+  }
+
+  /* --- Info Panel (Left) --- */
+  .info-panel {
+    width: 360px;
+    min-width: 360px;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: margin-left 0.3s ease;
+    position: relative;
+  }
+
+  .info-panel.collapsed { margin-left: -360px; }
+
+  .info-toggle {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    padding: 12px 6px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, left 0.3s ease;
+    writing-mode: vertical-rl;
+    letter-spacing: 0.1em;
+  }
+
+  .info-toggle:hover { background: var(--border); color: var(--text); }
+  .info-toggle.open { left: 360px; }
+
+  .info-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--surface);
+  }
+
+  .info-header h2 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 4px;
+    background: linear-gradient(90deg, var(--text-dim), var(--text-muted), var(--text-dim), var(--text-muted), var(--text-dim));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 8s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .info-header p {
+    font-size: 0.75rem;
+    color: var(--text-dimmer);
+    line-height: 1.5;
+  }
+
+  .info-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+  }
+
+  .info-content::-webkit-scrollbar { width: 4px; }
+  .info-content::-webkit-scrollbar-track { background: transparent; }
+  .info-content::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+  .info-section {
+    margin-bottom: 20px;
+  }
+
+  .info-section h3 {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .info-section p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .info-kbd-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--surface);
+  }
+
+  .info-kbd-row:last-child { border-bottom: none; }
+
+  .info-kbd-row kbd {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .info-kbd-row span {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .info-step {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .info-step-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--border-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  .info-step-text {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding-top: 2px;
+  }
+
+  .info-example-chain {
+    position: relative;
+    margin: 14px 0;
+    height: 28px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  }
+
+  .info-example-track {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .info-word {
+    font-size: 0.75rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 7px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+  }
+
+  .info-word.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .info-arrow {
+    font-size: 0.65rem;
+    color: var(--text-dimmest);
+    margin: 0 3px;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+
+  .info-arrow.visible {
+    opacity: 1;
+  }
+
+  .info-tips {
+    list-style: disc;
+    padding-left: 1.2em;
+    margin: 0;
+  }
+
+  .info-tips li {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .info-score-breakdown {
+    background: var(--bg);
+    border: 1px solid var(--surface);
+    border-radius: 8px;
+    padding: 8px 12px 4px;
+    margin: 14px 0;
+  }
+
+  .info-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 0.75rem;
+  }
+
+  .info-score-row .label { color: var(--text-dim); text-transform: none; letter-spacing: normal; font-size: 0.75rem; }
+  .info-score-row .value { color: var(--text); font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Menlo', 'Consolas', monospace; }
+  .info-score-row.total { border-top: 1px solid var(--border); margin: 4px -12px 0; padding: 6px 12px 0; }
+  .info-score-row.total .label { color: var(--score-green); }
+  .info-score-row.total .value { color: var(--score-green); }
+
+  /* --- Sidebar (Right) --- */
+  .sidebar {
+    width: 320px;
+    min-width: 320px;
+    background: var(--bg-panel);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: margin-right 0.3s ease;
+    position: relative;
+  }
+
+  .sidebar.collapsed { margin-right: -320px; }
+
+  .sidebar-toggle {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    padding: 12px 6px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, right 0.3s ease;
+    writing-mode: vertical-rl;
+    letter-spacing: 0.1em;
+  }
+
+  .sidebar-toggle:hover { background: var(--border); color: var(--text); }
+  .sidebar-toggle.open { right: 320px; }
+
+  /* --- Team Selector --- */
+  .team-bar {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--surface);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .team-selector {
+    flex: 1;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .team-selector:hover { border-color: var(--text-dimmer); color: var(--accent); }
+  .team-selector:focus { border-color: var(--text-dimmer); }
+
+  .team-bar-btn {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 0.75rem;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+  }
+
+  .team-bar-btn:hover { background: var(--border); color: var(--text); }
+
+  .team-bar-btn.danger:hover {
+    background: #3a1515;
+    color: #ff6b6b;
+    border-color: #5a2020;
+  }
+
+  /* Team edit modal */
+  .team-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .team-modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .team-modal {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 24px;
+    width: 340px;
+    max-width: 90vw;
+  }
+
+  .team-modal h3 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .team-modal-field {
+    margin-bottom: 14px;
+  }
+
+  .team-modal-field label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dimmer);
+    margin-bottom: 4px;
+  }
+
+  .team-modal-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    outline: none;
+    user-select: text;
+  }
+
+  .team-modal-input:focus { border-color: var(--text-dimmer); color: var(--accent); }
+
+  .emoji-picker-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .emoji-pick {
+    width: 36px;
+    height: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .emoji-pick:hover { background: var(--border); border-color: var(--text-dimmer); }
+  .emoji-pick.active { border-color: var(--text-muted); background: var(--border); }
+
+  .scoring-mode-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .scoring-mode-btn {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 0.75rem;
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .scoring-mode-btn:hover { background: var(--border); color: var(--text); }
+  .scoring-mode-btn.active { border-color: var(--score-green); color: var(--score-green); background: var(--surface); }
+
+  .team-modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    justify-content: flex-end;
+  }
+
+  .team-modal-actions button {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .team-modal-actions button:hover { background: var(--border); color: var(--text); }
+
+  .team-modal-actions button.primary {
+    background: #1a2a1a;
+    border-color: #2a4a2a;
+    color: var(--score-green);
+  }
+
+  .team-modal-actions button.primary:hover {
+    background: #1a3a1a;
+    color: #6bee9a;
+  }
+
+  .sidebar-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sidebar-header h2 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+
+  .sidebar-actions { display: flex; gap: 0.4rem; }
+
+  .sidebar-actions button {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .sidebar-actions button:hover { background: var(--border); color: var(--text); }
+
+  .sidebar-actions button.danger:hover {
+    background: #3a1515;
+    color: #ff6b6b;
+    border-color: #5a2020;
+  }
+
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+  }
+
+  .sidebar-content::-webkit-scrollbar { width: 4px; }
+  .sidebar-content::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-content::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+  .chart-container {
+    padding: 8px 0 12px;
+    border-bottom: 1px solid var(--surface);
+    margin-bottom: 8px;
+    overflow: visible;
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  .chart-container.scrollable {
+    overflow-x: auto;
+  }
+
+  .chart-container.scrollable::-webkit-scrollbar { height: 4px; }
+  .chart-container.scrollable::-webkit-scrollbar-track { background: transparent; }
+  .chart-container.scrollable::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+  .chart-container::-webkit-scrollbar { height: 4px; }
+  .chart-container::-webkit-scrollbar-track { background: transparent; }
+  .chart-container::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+  .chart-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dimmest);
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .chart-svg { width: 100%; height: 130px; display: block; overflow: visible; }
+
+  .chart-legend {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+
+  .chart-legend-item {
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .chart-legend-item:hover {
+    opacity: 1 !important;
+  }
+
+  .chart-legend.highlighting .chart-legend-item {
+    opacity: 0.3;
+  }
+
+  .chart-legend.highlighting .chart-legend-item.active {
+    opacity: 1;
+  }
+
+  .chart-series.dimmed { opacity: 0; }
+  .chart-series.highlighted { stroke-width: 2.5; opacity: 1; }
+  .chart-detail.highlighted { stroke-width: 1.5; opacity: 1; }
+
+  .attempt-card {
+    background: var(--bg);
+    border: 1px solid var(--surface);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    transition: border-color 0.15s;
+  }
+
+  .attempt-card:hover { border-color: var(--border-light); }
+  .attempt-card.needs-scores { border-color: #2a2a15; background: #131310; }
+  .attempt-card.scratch { opacity: 0.4; border-color: #2a1515; }
+
+  .attempt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .attempt-number {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .attempt-score {
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .attempt-details { display: flex; gap: 12px; margin-bottom: 8px; }
+
+  .attempt-stat { display: flex; flex-direction: column; gap: 2px; }
+
+  .attempt-stat-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dimmest);
+  }
+
+  .attempt-stat-value {
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 0.85rem;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .attempt-inputs { display: flex; gap: 6px; align-items: center; }
+
+  .score-input-group { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+
+  .score-input-group label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dimmest);
+  }
+
+  .score-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    width: 100%;
+    outline: none;
+    user-select: text;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .score-input:focus { border-color: var(--text-dimmer); color: var(--accent); }
+
+  .attempt-actions { display: flex; gap: 4px; margin-top: 6px; }
+
+  .attempt-actions button {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dimmer);
+    font-family: inherit;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .attempt-actions button:hover { color: var(--text); border-color: var(--text-dimmest); }
+  .attempt-actions button.scratch-btn:hover { color: #ff6b6b; border-color: #5a2020; }
+
+  .scratch-label {
+    font-size: 0.65rem;
+    color: #ff6b6b;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--border-light);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .empty-state kbd {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: inherit;
+    font-size: 0.7rem;
+    color: var(--text-dimmer);
+  }
+
+  .session-summary {
+    padding: 16px;
+    border-top: 1px solid var(--surface);
+    background: var(--bg);
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+  }
+
+  .summary-label {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dimmer);
+  }
+
+  .summary-value {
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 1.15rem;
+    color: var(--text);
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .summary-value.highlight {
+    color: var(--accent);
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+
+  .main-area { flex: 1; display: flex; min-width: 0; position: relative; }
+  .main-area .panel { flex: 1; min-width: 0; }
+
+  .theme-picker {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 50;
+    display: flex;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0.25;
+    transition: opacity 0.3s ease;
+  }
+
+  .theme-picker:hover {
+    opacity: 1;
+  }
+
+  .theme-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    position: relative;
+  }
+
+  .theme-dot:hover {
+    transform: scale(1.3);
+  }
+
+  .theme-dot.active {
+    border-color: rgba(255,255,255,0.6);
+  }
+
+  .save-indicator {
+    position: fixed;
+    bottom: 16px;
+    right: 340px;
+    background: #1a3a1a;
+    color: #5a5;
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  .save-indicator.show { opacity: 1; }
+  .save-indicator.sidebar-hidden { right: 20px; }
+
+  /* --- Go Countdown Modal --- */
+  .go-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .go-overlay.active { opacity: 1; pointer-events: all; }
+
+  .go-countdown {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: clamp(10rem, 30vw, 30rem);
+    font-weight: 100;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+  }
+
+  .go-countdown.pop { transform: scale(1.15); }
+  .go-countdown.go-text { color: var(--score-green); font-weight: 300; }
+
+  .go-subtitle {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--text-dimmer);
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- INFO PANEL -->
+<div id="info-panel" class="info-panel">
+  <div class="info-header">
+    <h2>Free Association</h2>
+    <p>A creative warm-up tool for teams by <a href="https://mfelix.org" target="_blank" style="color:var(--text-dim);text-decoration:none;border-bottom:1px solid var(--border-light);">mfelix.org</a></p>
+  </div>
+  <div class="info-content">
+    <div class="info-section">
+      <p><strong style="color:var(--text);">Free association is an exercise where participants rapidly call out words connected to whatever was just said.</strong> The goal is speed and spontaneity. Don't think, just react. For example:</p>
+      <div id="example-chain" class="info-example-chain">
+      </div>
+      <p>It's one of the fastest ways to get a group loose, focused, and thinking together. Use it as a warm-up before meetings, brainstorms, workshops, or creative sessions.</p>
+      <p>This tool times your rounds, counts responses, and tracks progress over time so your team can see real improvement.</p>
+    </div>
+
+    <div class="info-section">
+      <h3>How to Play</h3>
+      <p>One person acts as facilitator and operates the tool while everyone else focuses on the exercise.</p>
+      <div class="info-step">
+        <div class="info-step-num">1</div>
+        <div class="info-step-text">Press <kbd style="background:var(--surface);border:1px solid var(--border-light);border-radius:4px;padding:1px 6px;font-size:0.7rem;color:var(--text-muted);">Enter</kbd> to start the GO countdown.</div>
+      </div>
+      <div class="info-step">
+        <div class="info-step-num">2</div>
+        <div class="info-step-text">As words are called out, tap the left side of the screen or press <kbd style="background:var(--surface);border:1px solid var(--border-light);border-radius:4px;padding:1px 6px;font-size:0.7rem;color:var(--text-muted);">Space</kbd> to count each response.</div>
+      </div>
+      <div class="info-step">
+        <div class="info-step-num">3</div>
+        <div class="info-step-text">When the timer ends, the attempt is recorded. Rate any additional scoring dimensions in the sidebar.</div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3>Scoring</h3>
+      <p>Each team has a scoring mode that determines how attempts are scored. You can change the mode at any time by editing the team (pencil icon in the sidebar). The three modes are:</p>
+      <p style="margin-top:10px;"><strong style="color:var(--text);">Count</strong> <span style="font-size:0.6rem;color:var(--text-dim);background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 6px;margin-left:4px;vertical-align:middle;">default</span></p>
+      <p>Score equals the raw number of responses. The simplest mode, great for getting started.</p>
+      <p style="margin-top:10px;"><strong style="color:var(--text);">Count + Creativity</strong></p>
+      <p>Adds a creativity rating that the facilitator or team assigns after each attempt. Score is the average of count and creativity.</p>
+      <div class="info-score-breakdown">
+        <div class="info-score-row"><span class="label">Count (capped at 100)</span> <span class="value">0–100</span></div>
+        <div class="info-score-row"><span class="label">Creativity</span> <span class="value">0–100</span></div>
+        <div class="info-score-row total"><span class="label">Score = average of both</span> <span class="value">0–100</span></div>
+      </div>
+      <p style="margin-top:8px;">If you use the <kbd style="background:var(--surface);border:1px solid var(--border-light);border-radius:4px;padding:1px 6px;font-size:0.7rem;color:var(--text-muted);">1</kbd> <kbd style="background:var(--surface);border:1px solid var(--border-light);border-radius:4px;padding:1px 6px;font-size:0.7rem;color:var(--text-muted);">2</kbd> <kbd style="background:var(--surface);border:1px solid var(--border-light);border-radius:4px;padding:1px 6px;font-size:0.7rem;color:var(--text-muted);">3</kbd> keys during a round, creativity is auto-estimated from your ratings. You can always adjust it afterward. Scoring mode can be changed at any time. Existing data is preserved and scores recalculate automatically.</p>
+      <p style="margin-top:10px;"><strong style="color:var(--text);">Count + Creativity + Teamwork</strong></p>
+      <p>The full scoring mode. Adds a teamwork dimension on top of creativity. Score is the average of all three.</p>
+      <div class="info-score-breakdown">
+        <div class="info-score-row"><span class="label">Count (capped at 100)</span> <span class="value">0–100</span></div>
+        <div class="info-score-row"><span class="label">Creativity</span> <span class="value">0–100</span></div>
+        <div class="info-score-row"><span class="label">Teamwork</span> <span class="value">0–100</span></div>
+        <div class="info-score-row total"><span class="label">Score = average of all three</span> <span class="value">0–100</span></div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3>Teams &amp; Sessions</h3>
+      <p>The sidebar on the right has controls for organizing your practice across different groups and meetings.</p>
+      <p style="margin-top:8px;"><strong style="color:#ccc;">Teams</strong> Use the dropdown at the top of the sidebar to switch between teams. Each team has its own history, so you can track multiple groups independently. Hit the <strong style="color:#ccc;">+</strong> button to create a new team, or the <strong style="color:#ccc;">pencil</strong> icon to rename or delete the current one.</p>
+      <p style="margin-top:8px;"><strong style="color:#ccc;">Sessions</strong> Sessions group your attempts by meeting. Start a <strong style="color:#ccc;">New</strong> session each time your team sits down to practice. All attempts within a session show up together with a trend chart so you can see improvement within a single practice. Use <strong style="color:#ccc;">Clear All</strong> to wipe a team's history if you want a fresh start.</p>
+      <p style="margin-top:8px;color:#777;font-size:0.75rem;">Everything is saved locally in your browser. No account needed.</p>
+    </div>
+
+    <div class="info-section">
+      <h3>Tips</h3>
+      <ul class="info-tips">
+        <li>Speed matters more than cleverness. Don't overthink it.</li>
+        <li>Build on what the last person said rather than waiting for your own idea.</li>
+        <li>"Scratch" any round that had interruptions or false starts. It won't count toward averages.</li>
+        <li>Create separate teams to track different groups independently.</li>
+        <li>Use sessions to organize rounds by date. Start a new session each time you meet.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<button id="info-toggle" class="info-toggle open">INFO</button>
+
+<div class="main-area">
+<div class="theme-picker" id="theme-picker">
+  <div class="theme-dot active" data-theme="" style="background:#666;" title="Default"></div>
+  <div class="theme-dot" data-theme="midnight" style="background:#5b8af0;" title="Midnight"></div>
+  <div class="theme-dot" data-theme="ember" style="background:#e8734a;" title="Ember"></div>
+  <div class="theme-dot" data-theme="forest" style="background:#4ade80;" title="Forest"></div>
+  <div class="theme-dot" data-theme="violet" style="background:#a47aee;" title="Violet"></div>
+  <div class="theme-dot" data-theme="rose" style="background:#e8608a;" title="Rose"></div>
+  <div class="theme-dot" data-theme="mono" style="background:#ccc;" title="Mono"></div>
+</div>
+<div class="panel panel-left">
+  <div class="ring-wrapper">
+    <div id="counter" class="number">0</div>
+  </div>
+  <div class="ring-label">Counter</div>
+  <div class="hints">
+    <span><kbd>Tap</kbd> / <kbd>Space</kbd> Count</span>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="ring-wrapper">
+    <svg class="ring-svg" viewBox="0 0 300 300">
+      <circle class="ring-bg" cx="150" cy="150" r="140" />
+      <circle id="timer-ring-progress" class="ring-progress" cx="150" cy="150" r="140" />
+    </svg>
+    <div id="timer" class="number">60</div>
+  </div>
+  <div class="ring-below">
+    <div id="timer-label" class="label">Timer</div>
+  </div>
+  <div class="hints">
+    <span class="enter-hint"><kbd>Enter</kbd> GO</span>
+    <span><kbd>S</kbd> Start / Pause</span>
+    <span id="reset-hint" style="display:none;"><kbd>R</kbd> Reset</span>
+  </div>
+</div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
+  <div class="team-bar">
+    <select id="team-selector" class="team-selector"></select>
+    <button id="edit-team-btn" class="team-bar-btn" title="Edit team">&#9998;</button>
+    <button id="add-team-btn" class="team-bar-btn" title="New team">+</button>
+  </div>
+  <div class="sidebar-header">
+    <h2>Sessions</h2>
+    <div class="sidebar-actions">
+      <button id="new-session-btn">New</button>
+      <button id="clear-sessions-btn" class="danger">Clear All</button>
+    </div>
+  </div>
+  <div id="chart-area" class="chart-container" style="display:none;">
+    <div class="chart-label">Score Trend</div>
+    <svg id="score-chart" class="chart-svg" viewBox="0 0 280 120"></svg>
+    <div id="chart-legend" class="chart-legend">
+      <span class="chart-legend-item" data-series="score" style="color:var(--score-green);">&#9679; Score</span>
+      <span class="chart-legend-item" data-series="count" style="color:var(--score-blue);">&#9679; Count</span>
+      <span class="chart-legend-item" data-series="creativity" style="color:var(--score-pink);">&#9679; Creativity</span>
+      <span class="chart-legend-item" data-series="teamwork" style="color:var(--score-gold);">&#9679; Teamwork</span>
+    </div>
+  </div>
+  <div id="attempts-list" class="sidebar-content"></div>
+  <div id="session-summary" class="session-summary" style="display:none;">
+    <div class="summary-row">
+      <span class="summary-label">Attempts</span>
+      <span id="summary-attempts" class="summary-value">0</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">Avg Count</span>
+      <span id="summary-avg-count" class="summary-value">—</span>
+    </div>
+    <div class="summary-row" id="summary-creativity-row">
+      <span class="summary-label">Avg Creativity</span>
+      <span id="summary-avg-creativity" class="summary-value">—</span>
+    </div>
+    <div class="summary-row" id="summary-teamwork-row">
+      <span class="summary-label">Avg Teamwork</span>
+      <span id="summary-avg-teamwork" class="summary-value">—</span>
+    </div>
+    <div class="summary-row" style="margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--surface);">
+      <span class="summary-label">Final Score</span>
+      <span id="summary-final" class="summary-value highlight">—</span>
+    </div>
+  </div>
+</div>
+
+<button id="sidebar-toggle" class="sidebar-toggle open">SCORES</button>
+<div id="save-indicator" class="save-indicator">Saved</div>
+
+<!-- Team Edit Modal -->
+<div id="team-modal-overlay" class="team-modal-overlay">
+  <div class="team-modal">
+    <h3 id="team-modal-title">Edit Team</h3>
+    <div class="team-modal-field">
+      <label>Team Name</label>
+      <input id="team-name-input" class="team-modal-input" type="text" placeholder="e.g. The Brainstormers" maxlength="40" />
+    </div>
+    <div class="team-modal-field">
+      <label>Emoji</label>
+      <div id="emoji-picker" class="emoji-picker-row"></div>
+    </div>
+    <div class="team-modal-field">
+      <label>Scoring Mode</label>
+      <div id="scoring-mode-picker" class="scoring-mode-picker">
+        <button class="scoring-mode-btn" data-mode="count">Count</button>
+        <button class="scoring-mode-btn" data-mode="count+creativity">Count + Creativity</button>
+        <button class="scoring-mode-btn" data-mode="count+creativity+teamwork">Count + Creativity + Teamwork</button>
+      </div>
+    </div>
+    <div class="team-modal-actions">
+      <button id="delete-team-btn" class="danger" style="margin-right:auto;">Delete Team</button>
+      <button id="team-modal-cancel">Cancel</button>
+      <button id="team-modal-save" class="primary">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Go Countdown Modal -->
+<div id="go-overlay" class="go-overlay">
+  <div id="go-countdown" class="go-countdown">3</div>
+  <div class="go-subtitle">Get ready...</div>
+</div>
+
+<script>
+  // --- Constants ---
+  var EMOJIS = ['🧠','⚡','🔥','🌟','🚀','💡','🎯','🎨','🦄','🐉','👾','🤖','🎪','🌈','💎','🏆','🦊','🐸','🍕','🎸'];
+  var RING_CIRCUMFERENCE = 2 * Math.PI * 140;
+
+  // --- DOM ---
+  var counterEl = document.getElementById('counter');
+  var timerEl = document.getElementById('timer');
+  var timerLabel = document.getElementById('timer-label');
+  var ringProgress = document.getElementById('timer-ring-progress');
+
+  var sidebar = document.getElementById('sidebar');
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var attemptsList = document.getElementById('attempts-list');
+  var chartArea = document.getElementById('chart-area');
+  var scoreChart = document.getElementById('score-chart');
+  var sessionSummary = document.getElementById('session-summary');
+  var saveIndicator = document.getElementById('save-indicator');
+  var teamSelector = document.getElementById('team-selector');
+  var teamModalOverlay = document.getElementById('team-modal-overlay');
+  var teamNameInput = document.getElementById('team-name-input');
+  var emojiPicker = document.getElementById('emoji-picker');
+  var teamModalTitle = document.getElementById('team-modal-title');
+
+  // --- State ---
+  var count = 0;
+  var creativityRatings = [];
+  var totalSeconds = 60;
+  var timerSeconds = 60;
+  var timerInterval = null;
+  var timerRunning = false;
+  var timerDone = false;
+  var editingTeamIndex = -1;
+  var selectedEmoji = '';
+
+  // --- Data ---
+  // { teams: [{ id, name, emoji, sessions: [{ id, date, attempts }] }], currentTeamIndex, currentSessionIndex }
+  var data = loadData();
+
+  function loadData() {
+    try {
+      var raw = localStorage.getItem('fa-counter-data');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        // Migrate old format (sessions at top level)
+        if (parsed.sessions && !parsed.teams) {
+          return {
+            teams: [{ id: Date.now(), name: 'Team 1', emoji: '🧠', sessions: parsed.sessions }],
+            currentTeamIndex: 0,
+            currentSessionIndex: parsed.sessions.length - 1
+          };
+        }
+        if (parsed.teams && parsed.teams.length > 0) {
+          // Migrate: teams created before scoring modes default to full mode
+          parsed.teams.forEach(function(t) {
+            if (!t.scoringMode) t.scoringMode = 'count+creativity+teamwork';
+          });
+          return parsed;
+        }
+      }
+    } catch (e) {}
+    return {
+      teams: [createTeam('Team 1', '🧠')],
+      currentTeamIndex: 0,
+      currentSessionIndex: 0
+    };
+  }
+
+  function createTeam(name, emoji) {
+    return {
+      id: Date.now(),
+      name: name,
+      emoji: emoji || '🧠',
+      scoringMode: 'count',
+      sessions: [createSession()]
+    };
+  }
+
+  function createSession() {
+    return {
+      id: Date.now(),
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      attempts: []
+    };
+  }
+
+  function saveData() {
+    localStorage.setItem('fa-counter-data', JSON.stringify(data));
+    flashSave();
+  }
+
+  function flashSave() {
+    saveIndicator.classList.add('show');
+    saveIndicator.classList.toggle('sidebar-hidden', sidebar.classList.contains('collapsed'));
+    clearTimeout(flashSave._t);
+    flashSave._t = setTimeout(function() { saveIndicator.classList.remove('show'); }, 800);
+  }
+
+  function currentTeam() { return data.teams[data.currentTeamIndex]; }
+  function currentSession() { return currentTeam().sessions[data.currentSessionIndex]; }
+
+  function calcScore(a, team) {
+    if (a.scratch) return null;
+    var t = team || currentTeam();
+    var mode = t.scoringMode || 'count';
+    if (mode === 'count') return a.count;
+    var c = Math.min(a.count, 100);
+    if (mode === 'count+creativity') {
+      if (a.creativity == null) return null;
+      return Math.round((c + a.creativity) / 2);
+    }
+    // count+creativity+teamwork
+    if (a.creativity == null || a.teamwork == null) return null;
+    return Math.round((c + a.creativity + a.teamwork) / 3);
+  }
+
+  function recordAttempt() {
+    if (count === 0) return;
+    var creativity = null;
+    if (creativityRatings.length > 0) {
+      var avg = creativityRatings.reduce(function(s, v) { return s + v; }, 0) / creativityRatings.length;
+      creativity = Math.round(((avg - 1) / 2) * 100);
+    }
+    var attempt = {
+      count: count, creativity: creativity, teamwork: null,
+      scratch: false, score: null, duration: totalSeconds
+    };
+    attempt.score = calcScore(attempt, currentTeam());
+    currentSession().attempts.push(attempt);
+    saveData();
+    renderSidebar();
+  }
+
+  // --- Team Selector ---
+  function renderTeamSelector() {
+    var html = '';
+    data.teams.forEach(function(t, i) {
+      var sel = i === data.currentTeamIndex ? ' selected' : '';
+      html += '<option value="' + i + '"' + sel + '>' + t.emoji + ' ' + t.name + '</option>';
+    });
+    teamSelector.innerHTML = html;
+  }
+
+  var switchingTeam = false;
+  teamSelector.addEventListener('change', function() {
+    if (switchingTeam) return;
+    switchingTeam = true;
+    data.currentTeamIndex = parseInt(teamSelector.value);
+    var team = currentTeam();
+    // Pick the last session that has attempts, otherwise fall back to the last session
+    var lastWithAttempts = -1;
+    for (var i = team.sessions.length - 1; i >= 0; i--) {
+      if (team.sessions[i].attempts.length > 0) { lastWithAttempts = i; break; }
+    }
+    data.currentSessionIndex = lastWithAttempts >= 0 ? lastWithAttempts : team.sessions.length - 1;
+    saveData();
+    renderSidebar();
+    switchingTeam = false;
+  });
+
+  document.getElementById('add-team-btn').addEventListener('click', function() {
+    openTeamModal(-1);
+  });
+
+  document.getElementById('edit-team-btn').addEventListener('click', function() {
+    openTeamModal(data.currentTeamIndex);
+  });
+
+  // --- Team Modal ---
+  var selectedScoringMode = 'count';
+
+  function openTeamModal(idx) {
+    editingTeamIndex = idx;
+    if (idx >= 0) {
+      var t = data.teams[idx];
+      teamModalTitle.textContent = 'Edit Team';
+      teamNameInput.value = t.name;
+      selectedEmoji = t.emoji;
+      selectedScoringMode = t.scoringMode || 'count';
+      document.getElementById('delete-team-btn').style.display = data.teams.length > 1 ? '' : 'none';
+    } else {
+      teamModalTitle.textContent = 'New Team';
+      teamNameInput.value = '';
+      selectedEmoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+      selectedScoringMode = 'count';
+      document.getElementById('delete-team-btn').style.display = 'none';
+    }
+    renderEmojiPicker();
+    renderScoringModePicker();
+    teamModalOverlay.classList.add('active');
+    teamNameInput.focus();
+  }
+
+  function renderScoringModePicker() {
+    var btns = document.querySelectorAll('.scoring-mode-btn');
+    btns.forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-mode') === selectedScoringMode);
+    });
+  }
+
+  document.getElementById('scoring-mode-picker').addEventListener('click', function(e) {
+    var btn = e.target.closest('.scoring-mode-btn');
+    if (!btn) return;
+    selectedScoringMode = btn.getAttribute('data-mode');
+    renderScoringModePicker();
+  });
+
+  function closeTeamModal() {
+    teamModalOverlay.classList.remove('active');
+  }
+
+  function renderEmojiPicker() {
+    emojiPicker.innerHTML = EMOJIS.map(function(e) {
+      var cls = e === selectedEmoji ? ' active' : '';
+      return '<button class="emoji-pick' + cls + '" data-emoji="' + e + '">' + e + '</button>';
+    }).join('');
+  }
+
+  emojiPicker.addEventListener('click', function(e) {
+    var btn = e.target.closest('.emoji-pick');
+    if (!btn) return;
+    selectedEmoji = btn.dataset.emoji;
+    renderEmojiPicker();
+  });
+
+  document.getElementById('team-modal-save').addEventListener('click', function() {
+    var name = teamNameInput.value.trim();
+    if (!name) return;
+    if (editingTeamIndex >= 0) {
+      data.teams[editingTeamIndex].name = name;
+      data.teams[editingTeamIndex].emoji = selectedEmoji;
+      data.teams[editingTeamIndex].scoringMode = selectedScoringMode;
+    } else {
+      var newTeam = createTeam(name, selectedEmoji);
+      newTeam.scoringMode = selectedScoringMode;
+      data.teams.push(newTeam);
+      data.currentTeamIndex = data.teams.length - 1;
+      data.currentSessionIndex = 0;
+    }
+    // Recalculate all scores for this team with new mode
+    var team = currentTeam();
+    team.sessions.forEach(function(session) {
+      session.attempts.forEach(function(a) {
+        a.score = calcScore(a, team);
+      });
+    });
+    saveData();
+    renderTeamSelector();
+    renderSidebar();
+    closeTeamModal();
+  });
+
+  document.getElementById('team-modal-cancel').addEventListener('click', closeTeamModal);
+
+  teamModalOverlay.addEventListener('click', function(e) {
+    if (e.target === teamModalOverlay) closeTeamModal();
+  });
+
+  document.getElementById('delete-team-btn').addEventListener('click', function() {
+    if (data.teams.length <= 1) return;
+    if (!confirm('Delete team "' + data.teams[editingTeamIndex].name + '" and all its data?')) return;
+    data.teams.splice(editingTeamIndex, 1);
+    if (data.currentTeamIndex >= data.teams.length) data.currentTeamIndex = data.teams.length - 1;
+    data.currentSessionIndex = currentTeam().sessions.length - 1;
+    saveData();
+    renderTeamSelector();
+    renderSidebar();
+    closeTeamModal();
+  });
+
+  teamNameInput.addEventListener('keydown', function(e) {
+    e.stopPropagation();
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('team-modal-save').click();
+    }
+    if (e.key === 'Escape') closeTeamModal();
+  });
+
+  // --- Sidebar Toggle ---
+  sidebarToggle.addEventListener('click', function() {
+    sidebar.classList.toggle('collapsed');
+    sidebarToggle.classList.toggle('open');
+  });
+
+  // --- Info Panel Toggle ---
+  var infoPanel = document.getElementById('info-panel');
+  var infoToggle = document.getElementById('info-toggle');
+
+  infoToggle.addEventListener('click', function() {
+    infoPanel.classList.toggle('collapsed');
+    infoToggle.classList.toggle('open');
+    if (infoPanel.classList.contains('collapsed')) {
+      localStorage.setItem('fa-info-dismissed', '1');
+    }
+  });
+
+  // Check if any team has scoring data
+  var hasScoreData = data.teams.some(function(t) {
+    return t.sessions.some(function(s) {
+      return s.attempts.some(function(a) { return calcScore(a) != null; });
+    });
+  });
+
+  if (hasScoreData) {
+    // Returning user with data: close info, open scores
+    infoPanel.classList.add('collapsed');
+    infoToggle.classList.remove('open');
+  } else {
+    // New user: open info, close scores
+    sidebar.classList.add('collapsed');
+    sidebarToggle.classList.remove('open');
+  }
+
+  document.getElementById('new-session-btn').addEventListener('click', function() {
+    currentTeam().sessions.push(createSession());
+    data.currentSessionIndex = currentTeam().sessions.length - 1;
+    saveData();
+    renderSidebar();
+  });
+
+  document.getElementById('clear-sessions-btn').addEventListener('click', function() {
+    if (!confirm('Clear all sessions for ' + currentTeam().emoji + ' ' + currentTeam().name + '?')) return;
+    currentTeam().sessions = [createSession()];
+    data.currentSessionIndex = 0;
+    saveData();
+    renderSidebar();
+  });
+
+  window.deleteSession = function(idx) {
+    var team = currentTeam();
+    if (team.sessions.length <= 1) return;
+    if (!confirm('Delete Session ' + (idx + 1) + '?')) return;
+    team.sessions.splice(idx, 1);
+    if (data.currentSessionIndex >= team.sessions.length) {
+      data.currentSessionIndex = team.sessions.length - 1;
+    } else if (data.currentSessionIndex > idx) {
+      data.currentSessionIndex--;
+    }
+    saveData();
+    renderSidebar();
+  };
+
+  // --- Render Sidebar ---
+  function renderSidebar() {
+    renderTeamSelector();
+    var team = currentTeam();
+    var sessions = team.sessions;
+    var session = currentSession();
+    var attempts = session.attempts;
+    var html = '';
+
+    // Session selector
+    if (sessions.length > 1) {
+      html += '<div style="display:flex;gap:4px;margin-bottom:8px;align-items:center;">';
+      html += '<select id="session-select" onchange="switchSession(parseInt(this.value))" style="background:var(--surface);border:1px solid var(--border-light);border-radius:6px;color:var(--text);font-family:inherit;font-size:0.75rem;padding:4px 8px;cursor:pointer;outline:none;flex:1;">';
+      sessions.forEach(function(s, i) {
+        var sel = i === data.currentSessionIndex ? ' selected' : '';
+        html += '<option value="' + i + '"' + sel + '>' + (s.date || 'Session ' + (i + 1)) + '</option>';
+      });
+      html += '</select>';
+      html += '<button onclick="deleteSession(data.currentSessionIndex)" style="background:none;border:1px solid var(--border-light);border-radius:6px;color:var(--text-dimmer);font-size:0.7rem;padding:3px 6px;cursor:pointer;line-height:1;" title="Delete session">&times;</button>';
+      html += '</div>';
+    }
+
+    if (attempts.length === 0) {
+      html += '<div class="empty-state">No attempts yet.<br>Hit <kbd>Enter</kbd> to GO.<br>Score is recorded when timer ends.</div>';
+      attemptsList.innerHTML = html;
+      chartArea.style.display = 'none';
+      sessionSummary.style.display = 'none';
+      return;
+    }
+
+    sessionSummary.style.display = '';
+
+    var mode = team.scoringMode || 'count';
+    var hasCreativity = mode === 'count+creativity' || mode === 'count+creativity+teamwork';
+    var hasTeamwork = mode === 'count+creativity+teamwork';
+
+    attempts.forEach(function(a, i) {
+      var score = calcScore(a, team);
+      var scoreDisplay = score != null ? score : '—';
+      var needsScores = false;
+      if (!a.scratch) {
+        if (hasCreativity && a.creativity == null) needsScores = true;
+        if (hasTeamwork && a.teamwork == null) needsScores = true;
+      }
+      var extraClass = a.scratch ? ' scratch' : needsScores ? ' needs-scores' : '';
+      html += '<div class="attempt-card' + extraClass + '" data-index="' + i + '">';
+      html += '<div class="attempt-header">';
+      html += '<span class="attempt-number">Attempt ' + (i + 1) + '</span>';
+      if (a.scratch) {
+        html += '<span class="scratch-label">SCRATCH</span>';
+      } else {
+        html += '<span class="attempt-score">' + scoreDisplay + '</span>';
+      }
+      html += '</div>';
+      html += '<div class="attempt-details">';
+      html += '<div class="attempt-stat"><span class="attempt-stat-label">Count</span><span class="attempt-stat-value">' + a.count + '</span></div>';
+      html += '<div class="attempt-stat"><span class="attempt-stat-label">Duration</span><span class="attempt-stat-value">' + (a.duration || '—') + 's</span></div>';
+      html += '</div>';
+      if (!a.scratch && (hasCreativity || hasTeamwork)) {
+        html += '<div class="attempt-inputs">';
+        if (hasCreativity) {
+          html += '<div class="score-input-group"><label>Creativity</label><input class="score-input" type="number" min="0" max="100" placeholder="0-100" value="' + (a.creativity != null ? a.creativity : '') + '" data-field="creativity" data-index="' + i + '"></div>';
+        }
+        if (hasTeamwork) {
+          html += '<div class="score-input-group"><label>Teamwork</label><input class="score-input" type="number" min="0" max="100" placeholder="0-100" value="' + (a.teamwork != null ? a.teamwork : '') + '" data-field="teamwork" data-index="' + i + '"></div>';
+        }
+        html += '</div>';
+      }
+      html += '<div class="attempt-actions">';
+      if (a.scratch) {
+        html += '<button onclick="unmarkScratch(' + i + ')">Restore</button>';
+      } else {
+        html += '<button class="scratch-btn" onclick="markScratch(' + i + ')">Scratch</button>';
+      }
+      html += '<button onclick="removeAttempt(' + i + ')">Delete</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+
+    attemptsList.innerHTML = html;
+
+    attemptsList.querySelectorAll('.score-input').forEach(function(input) {
+      input.addEventListener('input', handleScoreInput);
+      input.addEventListener('keydown', function(e) { e.stopPropagation(); });
+    });
+
+    renderChart();
+    renderSummary();
+  }
+
+  function handleScoreInput(e) {
+    var idx = parseInt(e.target.dataset.index);
+    var field = e.target.dataset.field;
+    var val = e.target.value.trim();
+    var session = currentSession();
+    if (val === '') {
+      session.attempts[idx][field] = null;
+    } else {
+      session.attempts[idx][field] = Math.max(0, Math.min(100, parseInt(val) || 0));
+    }
+    var team = currentTeam();
+    var mode = team.scoringMode || 'count';
+    session.attempts[idx].score = calcScore(session.attempts[idx], team);
+    saveData();
+    var card = attemptsList.querySelector('.attempt-card[data-index="' + idx + '"]');
+    if (card) {
+      var scoreEl = card.querySelector('.attempt-score');
+      if (scoreEl) {
+        var s = session.attempts[idx].score;
+        scoreEl.textContent = s != null ? s : '—';
+      }
+      // Update card class
+      var a = session.attempts[idx];
+      var needsInput = false;
+      if (mode !== 'count' && a.creativity == null) needsInput = true;
+      if (mode === 'count+creativity+teamwork' && a.teamwork == null) needsInput = true;
+      card.classList.toggle('needs-scores', !a.scratch && needsInput);
+    }
+    renderChart();
+    renderSummary();
+  }
+
+  function markScratch(idx) {
+    currentSession().attempts[idx].scratch = true;
+    currentSession().attempts[idx].score = null;
+    saveData(); renderSidebar();
+  }
+
+  function unmarkScratch(idx) {
+    currentSession().attempts[idx].scratch = false;
+    currentSession().attempts[idx].score = calcScore(currentSession().attempts[idx]);
+    saveData(); renderSidebar();
+  }
+
+  function removeAttempt(idx) {
+    currentSession().attempts.splice(idx, 1);
+    saveData(); renderSidebar();
+  }
+
+  function switchSession(idx) {
+    data.currentSessionIndex = idx;
+    saveData();
+    renderSidebar();
+  }
+
+  function renderChart() {
+    var cs = getComputedStyle(document.documentElement);
+    var scoreColor = cs.getPropertyValue('--score-green').trim();
+    var bgPanel = cs.getPropertyValue('--bg-panel').trim();
+    var team = currentTeam();
+    var mode = team.scoringMode || 'count';
+    var hasCreativity = mode === 'count+creativity' || mode === 'count+creativity+teamwork';
+    var hasTeamwork = mode === 'count+creativity+teamwork';
+    var scored = [];
+    var sessionBounds = []; // { index, date } — index into scored[] where each session starts
+
+    team.sessions.forEach(function(session) {
+      var sessionStart = scored.length;
+      var hasScored = false;
+      var sessionScores = [];
+      session.attempts.forEach(function(a) {
+        var s = calcScore(a, team);
+        if (s != null) {
+          if (!hasScored) { hasScored = true; }
+          sessionScores.push(s);
+          scored.push({ score: s, count: Math.min(a.count, 100), creativity: a.creativity != null ? a.creativity : null, teamwork: a.teamwork != null ? a.teamwork : null });
+        }
+      });
+      if (hasScored) {
+        var avg = Math.round(sessionScores.reduce(function(sum, v) { return sum + v; }, 0) / sessionScores.length);
+        sessionBounds.push({ index: sessionStart, date: session.date, avgScore: avg });
+      }
+    });
+
+    if (scored.length < 2) { chartArea.style.display = 'none'; return; }
+    chartArea.style.display = '';
+    var minSpacing = 30;
+    var baseW = 280;
+    var h = 120, padL = 0, padR = 0, padT = 22, padB = 12;
+    var w = Math.max(baseW, padL + padR + (scored.length - 1) * minSpacing);
+    var xStep = (w - padL - padR) / (scored.length - 1);
+    scoreChart.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    scoreChart.style.width = w > baseW ? (w / baseW * 100) + '%' : '100%';
+    chartArea.classList.toggle('scrollable', w > baseW);
+
+    function toX(i) { return padL + i * xStep; }
+    function toY(val) { return h - padB - (val / 100) * (h - padT - padB); }
+    function makePath(data, field) {
+      var first = true;
+      return data.map(function(d, i) {
+        if (d[field] == null) return '';
+        var cmd = first ? 'M' : 'L';
+        first = false;
+        return cmd + toX(i).toFixed(1) + ',' + toY(d[field]).toFixed(1);
+      }).join(' ');
+    }
+
+    var chipH = 14;
+    var svg = '<defs><linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' + scoreColor + '" stop-opacity="0.12"/><stop offset="100%" stop-color="' + scoreColor + '" stop-opacity="0.01"/></linearGradient></defs>';
+
+    // Grid lines
+    [0, 25, 50, 75, 100].forEach(function(v) {
+      var y = toY(v);
+      svg += '<line x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (w - padR) + '" y2="' + y.toFixed(1) + '" stroke="' + cs.getPropertyValue('--surface').trim() + '" stroke-width="0.5"/>';
+    });
+
+    // Session boundary lines (solid) and date chips at top
+    sessionBounds.forEach(function(sb) {
+      var x = toX(sb.index);
+      // Solid vertical line spanning full height including through chip
+      svg += '<line x1="' + x.toFixed(1) + '" y1="0" x2="' + x.toFixed(1) + '" y2="' + (h - padB) + '" stroke="' + cs.getPropertyValue('--border').trim() + '" stroke-width="0.5"/>';
+      // Date chip at top with session avg score
+      var label = sb.date || '';
+      var short = label.replace(/,\s*\d{4}$/, '');
+      var chipText = short + '  ' + sb.avgScore;
+      var dateW = short.length * 5.5 + 6;
+      var scoreW = String(sb.avgScore).length * 5.5 + 8;
+      var chipW = dateW + scoreW + 2;
+      svg += '<rect x="' + x.toFixed(1) + '" y="0" width="' + chipW.toFixed(1) + '" height="' + (chipH + 2) + '" fill="' + cs.getPropertyValue('--border').trim() + '"/>';
+      svg += '<text x="' + (x + dateW / 2).toFixed(1) + '" y="' + (chipH - 2) + '" text-anchor="middle" fill="' + cs.getPropertyValue('--text-muted').trim() + '" font-size="9" font-family="inherit">' + short + '</text>';
+      svg += '<text x="' + (x + dateW + scoreW / 2).toFixed(1) + '" y="' + (chipH - 2) + '" text-anchor="middle" fill="' + scoreColor + '" font-size="9" font-weight="600" font-family="inherit">' + sb.avgScore + '</text>';
+    });
+
+    // Meta series (thin, muted, distinct colors): only show series relevant to scoring mode
+    var metaSeries = [
+      { field: 'count', color: cs.getPropertyValue('--score-blue').trim(), show: true }
+    ];
+    if (hasCreativity) metaSeries.push({ field: 'creativity', color: cs.getPropertyValue('--score-pink').trim(), show: true });
+    if (hasTeamwork) metaSeries.push({ field: 'teamwork', color: cs.getPropertyValue('--score-gold').trim(), show: true });
+
+    // Update legend visibility
+    chartLegend.querySelector('[data-series="count"]').style.display = '';
+    chartLegend.querySelector('[data-series="creativity"]').style.display = hasCreativity ? '' : 'none';
+    chartLegend.querySelector('[data-series="teamwork"]').style.display = hasTeamwork ? '' : 'none';
+
+    metaSeries.forEach(function(s) {
+      // Filter to data points that have this field
+      var hasData = scored.filter(function(d) { return d[s.field] != null; });
+      if (hasData.length < 2) return;
+      var pathD = makePath(scored, s.field);
+      svg += '<path class="chart-series" data-series="' + s.field + '" d="' + pathD + '" fill="none" stroke="' + s.color + '" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3,3" opacity="0.5"/>';
+      // Dots and labels (hidden by default, shown on hover)
+      scored.forEach(function(d, i) {
+        if (d[s.field] == null) return;
+        var x = toX(i);
+        var y = toY(d[s.field]);
+        svg += '<circle class="chart-series chart-detail" data-series="' + s.field + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.5" fill="' + bgPanel + '" stroke="' + s.color + '" stroke-width="1.5" opacity="0"/>';
+        svg += '<text class="chart-series chart-detail" data-series="' + s.field + '" x="' + x.toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" fill="' + s.color + '" font-size="6.5" font-family="inherit" opacity="0">' + d[s.field] + '</text>';
+      });
+    });
+
+    // Score series (prominent, green)
+    var scorePath = makePath(scored, 'score');
+    var areaD = scorePath + ' L' + toX(scored.length - 1).toFixed(1) + ',' + toY(0).toFixed(1) + ' L' + toX(0).toFixed(1) + ',' + toY(0).toFixed(1) + ' Z';
+    svg += '<path class="chart-series" data-series="score" d="' + areaD + '" fill="url(#chart-grad)"/>';
+    svg += '<path class="chart-series" data-series="score" d="' + scorePath + '" fill="none" stroke="' + scoreColor + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+
+    // Score dots and labels
+    scored.forEach(function(d, i) {
+      var x = toX(i);
+      var y = toY(d.score);
+      svg += '<circle class="chart-series" data-series="score" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3" fill="' + bgPanel + '" stroke="' + scoreColor + '" stroke-width="1.5"/>';
+      svg += '<text class="chart-series" data-series="score" x="' + x.toFixed(1) + '" y="' + (y - 7).toFixed(1) + '" text-anchor="middle" fill="' + scoreColor + '" font-size="7" font-family="inherit">' + d.score + '</text>';
+    });
+
+    scoreChart.innerHTML = svg;
+  }
+
+  // --- Chart Legend Hover ---
+  var chartLegend = document.getElementById('chart-legend');
+  chartLegend.addEventListener('mouseover', function(e) {
+    var item = e.target.closest('.chart-legend-item');
+    if (!item) return;
+    var series = item.dataset.series;
+    chartLegend.classList.add('highlighting');
+    chartLegend.querySelectorAll('.chart-legend-item').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.series === series);
+    });
+    scoreChart.querySelectorAll('.chart-series').forEach(function(el) {
+      if (el.dataset.series === series) {
+        el.classList.add('highlighted');
+        el.classList.remove('dimmed');
+      } else {
+        el.classList.add('dimmed');
+        el.classList.remove('highlighted');
+      }
+    });
+  });
+  chartLegend.addEventListener('mouseleave', function() {
+    chartLegend.classList.remove('highlighting');
+    chartLegend.querySelectorAll('.chart-legend-item').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    scoreChart.querySelectorAll('.chart-series').forEach(function(el) {
+      el.classList.remove('dimmed', 'highlighted');
+    });
+  });
+
+  function renderSummary() {
+    var team = currentTeam();
+    var mode = team.scoringMode || 'count';
+    var hasCreativity = mode === 'count+creativity' || mode === 'count+creativity+teamwork';
+    var hasTeamwork = mode === 'count+creativity+teamwork';
+
+    document.getElementById('summary-creativity-row').style.display = hasCreativity ? '' : 'none';
+    document.getElementById('summary-teamwork-row').style.display = hasTeamwork ? '' : 'none';
+
+    var valid = currentSession().attempts.filter(function(a) { return !a.scratch; });
+    document.getElementById('summary-attempts').textContent = valid.length + ' / ' + currentSession().attempts.length;
+    if (valid.length === 0) {
+      document.getElementById('summary-avg-count').textContent = '—';
+      document.getElementById('summary-avg-creativity').textContent = '—';
+      document.getElementById('summary-avg-teamwork').textContent = '—';
+      document.getElementById('summary-final').textContent = '—';
+      return;
+    }
+    document.getElementById('summary-avg-count').textContent = (valid.reduce(function(s, a) { return s + a.count; }, 0) / valid.length).toFixed(1);
+    if (hasCreativity) {
+      var withC = valid.filter(function(a) { return a.creativity != null; });
+      document.getElementById('summary-avg-creativity').textContent = withC.length > 0
+        ? (withC.reduce(function(s, a) { return s + a.creativity; }, 0) / withC.length).toFixed(0) + '%' : '—';
+    }
+    if (hasTeamwork) {
+      var withT = valid.filter(function(a) { return a.teamwork != null; });
+      document.getElementById('summary-avg-teamwork').textContent = withT.length > 0
+        ? (withT.reduce(function(s, a) { return s + a.teamwork; }, 0) / withT.length).toFixed(0) + '%' : '—';
+    }
+    var scored = valid.filter(function(a) { return calcScore(a, team) != null; });
+    document.getElementById('summary-final').textContent = scored.length > 0
+      ? (scored.reduce(function(s, a) { return s + calcScore(a, team); }, 0) / scored.length).toFixed(1) : '—';
+  }
+
+  // --- Display ---
+  function formatTimeDisplay(seconds) {
+    if (seconds < 100) return String(seconds);
+    var m = Math.floor(seconds / 60), s = seconds % 60;
+    if (m < 60) return m + ':' + String(s).padStart(2, '0');
+    var h = Math.floor(m / 60), rm = m % 60;
+    return h + ':' + String(rm).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  function updateRing() {
+    ringProgress.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - (totalSeconds - timerSeconds) / totalSeconds);
+  }
+
+  // --- Audio ---
+  var audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function beep(freq, dur) {
+    var ctx = getAudioCtx(), osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'square'; osc.frequency.value = freq; gain.gain.value = 0.15;
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.stop(ctx.currentTime + dur);
+  }
+
+  function tripleBeep() {
+    beep(880, 0.15);
+    setTimeout(function() { beep(880, 0.15); }, 200);
+    setTimeout(function() { beep(1200, 0.3); }, 400);
+  }
+
+  // --- Counter ---
+  var counterPanel = document.querySelector('.panel-left');
+  var counterRing = counterPanel.querySelector('.ring-wrapper');
+
+  function incrementCounter() {
+    if (timerDone) return;
+    // Auto-start timer on first count if not running
+    if (!timerRunning && !goActive && timerSeconds > 0) {
+      startTimer();
+    }
+    count++;
+    counterEl.textContent = count;
+
+    counterEl.classList.remove('bump');
+    counterRing.classList.remove('pop');
+    counterPanel.classList.remove('hit');
+    void counterEl.offsetWidth;
+    counterEl.classList.add('bump');
+    counterRing.classList.add('pop');
+    counterPanel.classList.add('hit');
+
+    setTimeout(function() {
+      counterPanel.classList.remove('hit');
+      counterRing.classList.remove('pop');
+    }, 150);
+  }
+
+  function resetCounter() {
+    count = 0;
+    creativityRatings = [];
+    counterEl.textContent = '0';
+    counterEl.classList.remove('flash');
+    void counterEl.offsetWidth;
+    counterEl.classList.add('flash');
+  }
+
+  // --- Timer ---
+  var timerPanel = document.querySelectorAll('.panel')[1];
+  var timerRing = timerPanel.querySelector('.ring-wrapper');
+  var timerPulseInterval = null;
+
+  function startTimerPulse() {
+    stopTimerPulse();
+    timerPulseInterval = setInterval(function() {
+      timerRing.classList.remove('pop');
+      void timerRing.offsetWidth;
+      timerRing.classList.add('pop');
+      setTimeout(function() { timerRing.classList.remove('pop'); }, 150);
+    }, 2000);
+  }
+
+  function stopTimerPulse() {
+    clearInterval(timerPulseInterval);
+    timerRing.classList.remove('pop');
+  }
+
+  var resetHint = document.getElementById('reset-hint');
+
+  function startTimer() {
+    if (timerDone || totalSeconds <= 0) return;
+    timerRunning = true;
+    ringProgress.style.visibility = '';
+    resetHint.style.display = '';
+    startTimerPulse();
+    timerInterval = setInterval(function() {
+      timerSeconds--;
+      timerEl.textContent = formatTimeDisplay(timerSeconds);
+      updateRing();
+      if (timerSeconds <= 10 && timerSeconds > 0) { timerEl.classList.add('urgent'); ringProgress.classList.add('urgent'); }
+      if (timerSeconds >= 1 && timerSeconds <= 5) beep(660, 0.1);
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval); timerRunning = false; timerDone = true; stopTimerPulse();
+        timerEl.textContent = '0';
+        timerEl.classList.remove('urgent'); timerEl.classList.add('done');
+        ringProgress.classList.remove('urgent'); ringProgress.classList.add('done');
+        tripleBeep(); recordAttempt();
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() { clearInterval(timerInterval); timerRunning = false; stopTimerPulse(); }
+
+  function resetTimer() {
+    clearInterval(timerInterval); timerRunning = false; timerDone = false;
+    stopTimerPulse();
+    timerSeconds = totalSeconds;
+    timerEl.textContent = formatTimeDisplay(totalSeconds);
+    timerEl.classList.remove('urgent', 'done');
+    ringProgress.classList.remove('urgent', 'done');
+    ringProgress.style.strokeDashoffset = RING_CIRCUMFERENCE;
+    ringProgress.style.visibility = 'hidden';
+    resetHint.style.display = 'none';
+    resetCounter();
+  }
+
+  // --- GO ---
+  var goOverlay = document.getElementById('go-overlay');
+  var goCountdownEl = document.getElementById('go-countdown');
+  var goActive = false;
+
+  function launchGo() {
+    if (goActive || timerRunning) return;
+    goActive = true;
+    clearInterval(timerInterval); timerRunning = false; timerDone = false;
+    count = 0; counterEl.textContent = '0';
+    timerSeconds = totalSeconds;
+    timerEl.textContent = formatTimeDisplay(totalSeconds);
+    timerEl.classList.remove('urgent', 'done');
+    ringProgress.classList.remove('urgent', 'done');
+    ringProgress.style.strokeDashoffset = RING_CIRCUMFERENCE;
+    ringProgress.style.visibility = 'hidden';
+
+    var enterHint = document.querySelector('.enter-hint');
+    if (enterHint) enterHint.classList.add('faded');
+    goOverlay.classList.add('active');
+    goCountdownEl.className = 'go-countdown';
+    goCountdownEl.textContent = '3';
+    beep(440, 0.12);
+
+    setTimeout(function() {
+      goCountdownEl.textContent = '2';
+      goCountdownEl.classList.remove('pop'); void goCountdownEl.offsetWidth; goCountdownEl.classList.add('pop');
+      beep(440, 0.12);
+      setTimeout(function() {
+        goCountdownEl.textContent = '1';
+        goCountdownEl.classList.remove('pop'); void goCountdownEl.offsetWidth; goCountdownEl.classList.add('pop');
+        beep(440, 0.12);
+        setTimeout(function() {
+          goCountdownEl.textContent = 'GO!';
+          goCountdownEl.classList.remove('pop'); goCountdownEl.classList.add('go-text');
+          void goCountdownEl.offsetWidth; goCountdownEl.classList.add('pop');
+          beep(880, 0.25);
+          setTimeout(function() {
+            goOverlay.classList.remove('active'); goActive = false; startTimer();
+          }, 400);
+        }, 800);
+      }, 800);
+    }, 800);
+  }
+
+  // --- Keyboard ---
+  document.addEventListener('keydown', function(e) {
+    if (e.target.classList && e.target.classList.contains('score-input')) return;
+    if (e.target.classList && e.target.classList.contains('team-modal-input')) return;
+    if (teamModalOverlay.classList.contains('active')) return;
+    if (goActive) { e.preventDefault(); return; }
+    if (e.code === 'Space') { e.preventDefault(); incrementCounter(); }
+    if (e.code === 'Digit1' || e.code === 'Digit2' || e.code === 'Digit3') {
+      var rating = parseInt(e.code.charAt(5));
+      creativityRatings.push(rating);
+      incrementCounter();
+    }
+    if (e.code === 'Enter') { e.preventDefault(); launchGo(); }
+    if (e.code === 'KeyR' && !e.metaKey && !e.ctrlKey) { resetCounter(); resetTimer(); }
+    if (e.code === 'KeyS' && !e.metaKey && !e.ctrlKey) {
+      if (timerDone) return;
+      if (timerRunning) pauseTimer(); else startTimer();
+    }
+  });
+
+  document.addEventListener('keyup', function() { counterEl.classList.remove('bump'); });
+
+  // --- Touch / Click on counter panel ---
+  counterPanel.addEventListener('click', function(e) {
+    if (goActive) return;
+    incrementCounter();
+  });
+  counterPanel.style.cursor = 'pointer';
+
+  // --- Theme picker ---
+  (function() {
+    var picker = document.getElementById('theme-picker');
+    var dots = picker.querySelectorAll('.theme-dot');
+    var saved = localStorage.getItem('fa-theme') || '';
+
+    function applyTheme(theme) {
+      if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+    }
+
+    function setActive(theme) {
+      dots.forEach(function(d) {
+        d.classList.toggle('active', d.getAttribute('data-theme') === theme);
+      });
+    }
+
+    // Apply saved theme on load
+    applyTheme(saved);
+    setActive(saved);
+
+    // Preview on hover, apply on click
+    var committed = saved;
+    dots.forEach(function(dot) {
+      dot.addEventListener('mouseenter', function() {
+        applyTheme(dot.getAttribute('data-theme'));
+      });
+      dot.addEventListener('mouseleave', function() {
+        applyTheme(committed);
+      });
+      dot.addEventListener('click', function() {
+        committed = dot.getAttribute('data-theme');
+        applyTheme(committed);
+        setActive(committed);
+        localStorage.setItem('fa-theme', committed);
+        renderChart();
+      });
+    });
+  })();
+
+  // Init
+  renderSidebar();
+
+  // --- Animated example chain ---
+  (function() {
+    var words = [
+      'ocean', 'wave', 'goodbye', 'hand', 'shake', 'earthquake', 'fault', 'blame', 'game', 'chess',
+      'board', 'surf', 'crash', 'landing', 'strip', 'tease', 'hint', 'clue', 'mystery', 'box',
+      'ring', 'bell', 'tower', 'power', 'grid', 'iron', 'wrinkle', 'time', 'bomb', 'shell',
+      'fire', 'alarm', 'clock', 'work', 'bench', 'press', 'juice', 'squeeze', 'hug', 'bear',
+      'market', 'fresh', 'prince', 'crown', 'jewel', 'diamond', 'rough', 'sketch', 'pad', 'lock',
+      'key', 'stone', 'cold', 'front', 'page', 'turn', 'table', 'salt', 'mine', 'craft',
+      'moon', 'light', 'speed', 'bump', 'road', 'trip', 'fall', 'leaf', 'spring', 'water',
+      'cloud', 'rain', 'dance', 'floor', 'plan', 'escape', 'room', 'dark', 'horse', 'shoe'
+    ];
+    var chainEl = document.getElementById('example-chain');
+    var track = document.createElement('div');
+    track.className = 'info-example-track';
+    chainEl.appendChild(track);
+
+    var WORD_DELAY = 600;
+    var ARROW_DELAY = 300;
+    var wordIndex = 0;
+
+    function recenter() {
+      var containerW = chainEl.offsetWidth;
+      var trackW = track.scrollWidth;
+      var offset = Math.max(0, trackW - containerW * 0.75);
+      track.style.transform = 'translateX(-' + offset + 'px)';
+    }
+
+    function showNext() {
+      // Add arrow before word (except first)
+      if (wordIndex > 0) {
+        var arrow = document.createElement('span');
+        arrow.className = 'info-arrow';
+        arrow.innerHTML = '\u2192';
+        track.appendChild(arrow);
+        setTimeout(function() {
+          arrow.classList.add('visible');
+          recenter();
+        }, 20);
+      }
+
+      // Add word
+      var wordEl = document.createElement('span');
+      wordEl.className = 'info-word';
+      wordEl.textContent = words[wordIndex % words.length];
+      track.appendChild(wordEl);
+
+      setTimeout(function() {
+        wordEl.classList.add('visible');
+        recenter();
+        wordIndex++;
+        setTimeout(showNext, WORD_DELAY);
+      }, wordIndex === 0 ? 20 : ARROW_DELAY);
+    }
+
+    showNext();
+  })();
+</script>
+
+</body>
+</html>

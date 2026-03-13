@@ -1180,6 +1180,182 @@
     color: var(--text-dimmer);
     margin-top: 2rem;
   }
+
+  /* ===== RESPONSIVE: TABLET / MOBILE (max-width: 768px) ===== */
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+      height: auto;
+      min-height: 100vh;
+      overflow: auto;
+    }
+
+    /* Info panel: full-screen overlay when open, hidden when collapsed */
+    .info-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      width: 100% !important;
+      min-width: 0 !important;
+      margin-left: 0 !important;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .info-panel.collapsed {
+      display: none;
+    }
+
+    /* Info toggle: fixed top-left button */
+    .info-toggle {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      writing-mode: horizontal-tb;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      padding: 8px 12px;
+      font-size: 0.7rem;
+      z-index: 201;
+      background: var(--bg-panel);
+    }
+    .info-toggle.open {
+      left: 12px;
+    }
+
+    /* Main area: stack vertically */
+    .main-area {
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* Panels: stack vertically, full width */
+    .panel {
+      padding-bottom: 2vh;
+      width: 100%;
+    }
+    .panel-left {
+      border-right: none;
+      position: relative;
+    }
+
+    /* Ring wrappers: smaller on mobile */
+    .ring-wrapper {
+      width: min(50vw, 250px);
+      height: min(50vw, 250px);
+    }
+
+    /* Number: responsive font size */
+    .number {
+      font-size: clamp(3.5rem, 12vw, 7rem);
+    }
+
+    /* Sidebar: bottom section, full width */
+    .sidebar {
+      width: 100% !important;
+      min-width: 0 !important;
+      height: auto;
+      border-left: none;
+      border-top: 1px solid var(--border);
+      margin-right: 0 !important;
+    }
+    .sidebar.collapsed {
+      display: none;
+    }
+
+    /* Sidebar toggle: fixed bottom bar */
+    .sidebar-toggle {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      transform: none;
+      writing-mode: horizontal-tb;
+      text-align: center;
+      padding: 12px;
+      border-radius: 12px 12px 0 0;
+      border: 1px solid var(--border-light);
+      border-bottom: none;
+      z-index: 100;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      background: var(--bg-panel);
+    }
+    .sidebar-toggle.open {
+      right: 0;
+      position: relative;
+      display: block;
+      width: 100%;
+      border-radius: 0;
+      border-top: 1px solid var(--border-light);
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    /* Theme picker: centered at top */
+    .theme-picker {
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      right: auto;
+      opacity: 0.6;
+      z-index: 50;
+    }
+
+    /* Hide keyboard hints on mobile */
+    .hints {
+      display: none;
+    }
+
+    /* Tap-to-count hint for counter panel */
+    .panel-left::after {
+      content: 'tap to count';
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      color: var(--text-dimmest);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    /* GO countdown: scale down */
+    .go-countdown {
+      font-size: clamp(6rem, 25vw, 15rem);
+    }
+
+    /* Team modal: full width */
+    .team-modal {
+      width: calc(100vw - 32px);
+      max-width: 100%;
+    }
+
+    /* Save indicator: reposition above bottom bar */
+    .save-indicator {
+      right: 16px !important;
+      bottom: 60px;
+    }
+    .save-indicator.sidebar-hidden {
+      bottom: 60px;
+    }
+  }
+
+  /* ===== RESPONSIVE: SMALL PHONE (max-width: 480px) ===== */
+  @media (max-width: 480px) {
+    .ring-wrapper {
+      width: min(45vw, 200px);
+      height: min(45vw, 200px);
+    }
+    .number {
+      font-size: clamp(2.5rem, 10vw, 5rem);
+    }
+    .panel-left {
+      border-right: none;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1691,7 +1867,14 @@
     });
   });
 
-  if (hasScoreData) {
+  var isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    // Mobile: collapse both panels by default
+    infoPanel.classList.add('collapsed');
+    infoToggle.classList.remove('open');
+    sidebar.classList.add('collapsed');
+    sidebarToggle.classList.remove('open');
+  } else if (hasScoreData) {
     // Returning user with data: close info, open scores
     infoPanel.classList.add('collapsed');
     infoToggle.classList.remove('open');

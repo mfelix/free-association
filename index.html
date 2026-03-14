@@ -1181,180 +1181,407 @@
     margin-top: 2rem;
   }
 
+  /* ===== MOBILE ELEMENTS (hidden on desktop) ===== */
+  .mobile-nav,
+  .drawer-backdrop,
+  .mobile-welcome,
+  .drawer-close-btn,
+  .drawer-handle {
+    display: none;
+  }
+
   /* ===== RESPONSIVE: TABLET / MOBILE (max-width: 768px) ===== */
   @media (max-width: 768px) {
     body {
       flex-direction: column;
-      height: auto;
-      min-height: 100vh;
-      overflow: auto;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      position: relative;
     }
 
-    /* Info panel: full-screen overlay when open, hidden when collapsed */
-    .info-panel {
+    /* --- Mobile Nav Bar --- */
+    .mobile-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 300;
+      border-top: 1px solid var(--border);
+      padding: 6px 0;
+      padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+      justify-content: space-around;
+      align-items: center;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      background: rgba(10, 10, 10, 0.85);
+    }
+
+    .mobile-nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: 0.6rem;
+      padding: 4px 16px;
+      cursor: pointer;
+      transition: color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-nav-btn:active,
+    .mobile-nav-btn.active {
+      color: var(--accent);
+    }
+
+    .mobile-nav-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .mobile-nav-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .mobile-nav-theme {
+      position: relative;
+    }
+
+    .mobile-theme-dot {
+      display: block;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--ring-stroke);
+      border: 2px solid var(--border-light);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    /* --- Drawer Backdrop --- */
+    .drawer-backdrop {
+      display: none;
       position: fixed;
       inset: 0;
+      z-index: 199;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .drawer-backdrop.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    /* --- Drawer Handle (added via JS) --- */
+    .drawer-handle {
+      display: block;
+      width: 36px;
+      height: 4px;
+      background: var(--border-light);
+      border-radius: 2px;
+      margin: 10px auto 0;
+      flex-shrink: 0;
+    }
+
+    /* --- Drawer Close Button (added via JS) --- */
+    .drawer-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      cursor: pointer;
+      z-index: 10;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .drawer-close-btn:active {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    /* --- Shared Drawer Styles for Info + Sidebar --- */
+    .info-panel,
+    .sidebar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
       z-index: 200;
       width: 100% !important;
       min-width: 0 !important;
-      margin-left: 0 !important;
-      height: 100vh;
-      overflow-y: auto;
-    }
-    .info-panel.collapsed {
-      display: none;
+      height: 85vh;
+      height: 85dvh;
+      border: none;
+      border-radius: 16px 16px 0 0;
+      margin: 0 !important;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
     }
 
-    /* Info toggle: fixed top-left button */
-    .info-toggle {
-      position: fixed;
-      top: 12px;
-      left: 12px;
-      writing-mode: horizontal-tb;
-      border-radius: 8px;
-      border: 1px solid var(--border-light);
-      padding: 8px 12px;
-      font-size: 0.7rem;
-      z-index: 201;
+    .info-panel.drawer-open,
+    .sidebar.drawer-open {
+      transform: translateY(0);
+    }
+
+    /* Override the desktop collapsed behavior — on mobile, drawers use transform not display */
+    .info-panel.collapsed,
+    .sidebar.collapsed {
+      display: flex;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* --- Info Panel Drawer Tweaks --- */
+    .info-panel {
       background: var(--bg-panel);
     }
-    .info-toggle.open {
-      left: 12px;
+
+    .info-panel .info-header {
+      padding-top: 20px;
+      padding-right: 48px;
     }
 
-    /* Main area: stack vertically */
+    .info-panel .info-content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* --- Sidebar Drawer Tweaks --- */
+    .sidebar {
+      background: var(--bg-panel);
+    }
+
+    .sidebar .team-bar {
+      padding-top: 16px;
+      padding-right: 48px;
+    }
+
+    .sidebar .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* --- Hide Desktop Toggle Buttons --- */
+    .info-toggle,
+    .sidebar-toggle {
+      display: none !important;
+    }
+
+    /* --- Hide Desktop Theme Picker --- */
+    .theme-picker {
+      display: none !important;
+    }
+
+    /* --- Main Area --- */
     .main-area {
       flex-direction: column;
       flex: 1;
+      min-height: 0;
+      padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
     }
 
-    /* Panels: stack vertically, full width */
-    .panel {
-      padding-bottom: 2vh;
+    .main-area .panel {
+      flex: 1;
+      min-height: 0;
       width: 100%;
     }
+
+    .panel {
+      padding-bottom: 0;
+    }
+
     .panel-left {
       border-right: none;
       border-bottom: 1px solid var(--border);
       position: relative;
     }
 
-    /* Ring wrappers: smaller on mobile */
+    /* --- Ring Wrappers: sized to fit --- */
     .ring-wrapper {
-      width: min(50vw, 250px);
-      height: min(50vw, 250px);
+      width: min(38vw, 220px);
+      height: min(38vw, 220px);
     }
 
-    /* Number: responsive font size */
+    /* --- Number: responsive --- */
     .number {
-      font-size: clamp(3.5rem, 12vw, 7rem);
+      font-size: clamp(3rem, 11vw, 6rem);
     }
 
-    /* Sidebar: bottom section, full width */
-    .sidebar {
-      width: 100% !important;
-      min-width: 0 !important;
-      height: auto;
-      border-left: none;
-      border-top: 1px solid var(--border);
-      margin-right: 0 !important;
-    }
-    .sidebar.collapsed {
-      display: none;
-    }
-
-    /* Sidebar toggle: top-right button */
-    .sidebar-toggle {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      left: auto;
-      bottom: auto;
-      transform: none;
-      writing-mode: horizontal-tb;
-      text-align: center;
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-light);
-      z-index: 100;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      background: var(--bg-panel);
-    }
-    .sidebar-toggle.open {
-      position: relative;
-      display: block;
-      width: 100%;
-      border-radius: 0;
-      border-top: 1px solid var(--border-light);
-      border-left: none;
-      border-right: none;
-      border-bottom: none;
-      top: auto;
-      right: auto;
-    }
-
-    /* Theme picker: centered at top */
-    .theme-picker {
-      position: fixed;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      right: auto;
-      opacity: 0.6;
-      z-index: 50;
-    }
-
-    /* Hide keyboard hints on mobile */
+    /* --- Hide keyboard hints, show touch hints --- */
     .hints {
       display: none;
     }
 
-    /* Tap-to-count hint for counter panel */
     .panel-left::after {
       content: 'tap to count';
       position: absolute;
-      bottom: 1.5rem;
+      bottom: 0.8rem;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--text-dimmest);
       text-transform: uppercase;
       letter-spacing: 0.15em;
     }
 
-    /* GO countdown: scale down */
+    /* --- Ring label spacing --- */
+    .ring-label,
+    .label {
+      margin-top: 0.4rem;
+      font-size: 0.75rem;
+    }
+
+    .ring-below {
+      margin-top: 0.4rem;
+    }
+
+    /* --- GO countdown --- */
     .go-countdown {
       font-size: clamp(6rem, 25vw, 15rem);
     }
 
-    /* Team modal: full width */
+    /* --- Team modal --- */
     .team-modal {
       width: calc(100vw - 32px);
       max-width: 100%;
     }
 
-    /* Save indicator: reposition */
+    /* --- Save indicator --- */
     .save-indicator {
       right: 16px !important;
-      bottom: 16px;
+      bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     }
     .save-indicator.sidebar-hidden {
-      bottom: 16px;
+      bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* --- Mobile Welcome Card --- */
+    .mobile-welcome {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 150;
+      padding: 12px;
+      pointer-events: none;
+    }
+
+    .mobile-welcome.visible {
+      display: block;
+    }
+
+    .mobile-welcome-content {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 16px 18px;
+      pointer-events: all;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .mobile-welcome-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .mobile-welcome-desc {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .mobile-welcome-how {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mobile-welcome-step {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+
+    .mobile-welcome-dot {
+      color: var(--text-dimmest);
+      font-size: 0.8rem;
+    }
+
+    .mobile-welcome-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mobile-welcome-learn,
+    .mobile-welcome-dismiss {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: 0.7rem;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-welcome-learn:active,
+    .mobile-welcome-dismiss:active {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .mobile-welcome-dismiss {
+      color: var(--text-muted);
+      border-color: var(--text-dimmest);
     }
   }
 
   /* ===== RESPONSIVE: SMALL PHONE (max-width: 480px) ===== */
   @media (max-width: 480px) {
     .ring-wrapper {
-      width: min(45vw, 200px);
-      height: min(45vw, 200px);
+      width: min(35vw, 180px);
+      height: min(35vw, 180px);
     }
     .number {
       font-size: clamp(2.5rem, 10vw, 5rem);
-    }
-    .panel-left {
-      border-right: none;
     }
   }
 </style>
@@ -1562,6 +1789,42 @@
 <div id="go-overlay" class="go-overlay">
   <div id="go-countdown" class="go-countdown">3</div>
   <div class="go-subtitle">Get ready...</div>
+</div>
+
+<!-- Mobile Navigation Bar -->
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-btn" id="mobile-info-btn">
+    <span class="mobile-nav-icon">&#8505;</span>
+    <span class="mobile-nav-label">Info</span>
+  </button>
+  <button class="mobile-nav-btn mobile-nav-theme" id="mobile-theme-btn">
+    <span class="mobile-theme-dot" id="mobile-theme-dot"></span>
+    <span class="mobile-nav-label">Theme</span>
+  </button>
+  <button class="mobile-nav-btn" id="mobile-scores-btn">
+    <span class="mobile-nav-icon">&#9733;</span>
+    <span class="mobile-nav-label">Scores</span>
+  </button>
+</div>
+
+<!-- Drawer Backdrop -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+<!-- Mobile Welcome Card (for first-time users) -->
+<div class="mobile-welcome" id="mobile-welcome">
+  <div class="mobile-welcome-content">
+    <div class="mobile-welcome-title">Free Association</div>
+    <p class="mobile-welcome-desc">A creative warm-up tool for teams. Call out words connected to what was just said &mdash; fast, spontaneous, no overthinking.</p>
+    <div class="mobile-welcome-how">
+      <span class="mobile-welcome-step">Tap counter to count</span>
+      <span class="mobile-welcome-dot">&middot;</span>
+      <span class="mobile-welcome-step">Tap GO to start timer</span>
+    </div>
+    <div class="mobile-welcome-actions">
+      <button class="mobile-welcome-learn" id="mobile-welcome-learn">Learn More</button>
+      <button class="mobile-welcome-dismiss" id="mobile-welcome-dismiss">Got it</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1868,13 +2131,125 @@
     });
   });
 
-  var isMobile = window.innerWidth <= 768;
+  var isMobile = window.matchMedia('(max-width: 768px)').matches;
   if (isMobile) {
-    // Mobile: collapse both panels by default
+    // Mobile: collapse both panels (drawers start hidden via transform)
     infoPanel.classList.add('collapsed');
     infoToggle.classList.remove('open');
     sidebar.classList.add('collapsed');
     sidebarToggle.classList.remove('open');
+
+    // --- Mobile Drawer System ---
+    var backdrop = document.getElementById('drawer-backdrop');
+    var mobileInfoBtn = document.getElementById('mobile-info-btn');
+    var mobileScoresBtn = document.getElementById('mobile-scores-btn');
+    var mobileThemeBtn = document.getElementById('mobile-theme-btn');
+    var mobileThemeDot = document.getElementById('mobile-theme-dot');
+    var activeDrawer = null;
+
+    // Add drawer handles and close buttons to both panels
+    function addDrawerChrome(panel) {
+      var handle = document.createElement('div');
+      handle.className = 'drawer-handle';
+      panel.insertBefore(handle, panel.firstChild);
+
+      var closeBtn = document.createElement('button');
+      closeBtn.className = 'drawer-close-btn';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.setAttribute('aria-label', 'Close');
+      closeBtn.addEventListener('click', closeDrawer);
+      panel.style.position = 'fixed';
+      panel.appendChild(closeBtn);
+    }
+
+    addDrawerChrome(infoPanel);
+    addDrawerChrome(sidebar);
+
+    function openDrawer(panel, btnEl) {
+      if (activeDrawer === panel) {
+        closeDrawer();
+        return;
+      }
+      if (activeDrawer) {
+        activeDrawer.classList.remove('drawer-open');
+        mobileInfoBtn.classList.remove('active');
+        mobileScoresBtn.classList.remove('active');
+      }
+      activeDrawer = panel;
+      backdrop.classList.add('visible');
+      panel.classList.add('drawer-open');
+      btnEl.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      if (!activeDrawer) return;
+      activeDrawer.classList.remove('drawer-open');
+      backdrop.classList.remove('visible');
+      mobileInfoBtn.classList.remove('active');
+      mobileScoresBtn.classList.remove('active');
+      activeDrawer = null;
+      document.body.style.overflow = '';
+    }
+
+    mobileInfoBtn.addEventListener('click', function() {
+      openDrawer(infoPanel, mobileInfoBtn);
+    });
+
+    mobileScoresBtn.addEventListener('click', function() {
+      openDrawer(sidebar, mobileScoresBtn);
+    });
+
+    backdrop.addEventListener('click', closeDrawer);
+
+    // --- Theme Cycling ---
+    var themes = ['', 'midnight', 'ember', 'forest', 'violet', 'rose', 'mono'];
+    var themeColors = { '': '#666', 'midnight': '#5b8af0', 'ember': '#e8734a', 'forest': '#4ade80', 'violet': '#a47aee', 'rose': '#e8608a', 'mono': '#ccc' };
+    var currentThemeIdx = themes.indexOf(localStorage.getItem('fa-theme') || '');
+    if (currentThemeIdx < 0) currentThemeIdx = 0;
+
+    function updateMobileThemeDot() {
+      mobileThemeDot.style.background = themeColors[themes[currentThemeIdx]] || '#666';
+    }
+    updateMobileThemeDot();
+
+    mobileThemeBtn.addEventListener('click', function() {
+      currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+      var theme = themes[currentThemeIdx];
+      if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      localStorage.setItem('fa-theme', theme);
+      updateMobileThemeDot();
+      // Sync desktop picker state
+      var dots = document.querySelectorAll('.theme-dot');
+      dots.forEach(function(d) {
+        d.classList.toggle('active', d.getAttribute('data-theme') === theme);
+      });
+      renderChart();
+    });
+
+    // --- Mobile Welcome Card ---
+    var welcomeCard = document.getElementById('mobile-welcome');
+    var welcomeDismissed = localStorage.getItem('fa-mobile-welcome-dismissed');
+
+    if (!hasScoreData && !welcomeDismissed) {
+      welcomeCard.classList.add('visible');
+    }
+
+    document.getElementById('mobile-welcome-learn').addEventListener('click', function() {
+      welcomeCard.classList.remove('visible');
+      localStorage.setItem('fa-mobile-welcome-dismissed', '1');
+      openDrawer(infoPanel, mobileInfoBtn);
+    });
+
+    document.getElementById('mobile-welcome-dismiss').addEventListener('click', function() {
+      welcomeCard.classList.remove('visible');
+      localStorage.setItem('fa-mobile-welcome-dismissed', '1');
+    });
+
   } else if (hasScoreData) {
     // Returning user with data: close info, open scores
     infoPanel.classList.add('collapsed');

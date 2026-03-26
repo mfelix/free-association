@@ -1208,27 +1208,30 @@
       left: 0;
       right: 0;
       z-index: 300;
-      border-top: 1px solid var(--border);
+      border: none;
       padding: 6px 0;
       padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
       justify-content: space-around;
       align-items: center;
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      background: rgba(10, 10, 10, 0.85);
+      background: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
     }
 
     .mobile-nav-btn {
       display: flex;
-      flex-direction: column;
+      flex: 1;
       align-items: center;
-      gap: 2px;
+      justify-content: center;
+      min-height: 44px;
       background: none;
       border: none;
       color: var(--text-dim);
       font-family: inherit;
-      font-size: 0.6rem;
-      padding: 4px 16px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 0;
       cursor: pointer;
       transition: color 0.15s;
       -webkit-tap-highlight-color: transparent;
@@ -1237,17 +1240,6 @@
     .mobile-nav-btn:active,
     .mobile-nav-btn.active {
       color: var(--accent);
-    }
-
-    .mobile-nav-icon {
-      font-size: 1.2rem;
-      line-height: 1;
-    }
-
-    .mobile-nav-label {
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
     }
 
     .mobile-nav-theme {
@@ -1299,13 +1291,13 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      width: 32px;
-      height: 32px;
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      border-radius: 50%;
       color: var(--text-dim);
-      font-size: 1.1rem;
+      font-size: 0.9rem;
       cursor: pointer;
       z-index: 10;
       line-height: 1;
@@ -1313,45 +1305,56 @@
     }
 
     .drawer-close-btn:active {
-      background: var(--border);
+      background: rgba(255, 255, 255, 0.15);
       color: var(--text);
     }
 
-    /* --- Shared Drawer Styles for Info + Sidebar --- */
+    .drawer-close-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* --- Shared Panel Styles for Info + Sidebar --- */
     .info-panel,
     .sidebar {
       position: fixed;
-      bottom: 0;
+      top: 0;
       left: 0;
       right: 0;
-      top: auto;
+      bottom: 0;
       z-index: 200;
       width: 100% !important;
       min-width: 0 !important;
-      height: 85vh;
-      height: 85dvh;
+      height: 100vh;
+      height: 100dvh;
       border: none;
-      border-radius: 16px 16px 0 0;
+      border-radius: 0;
       margin: 0 !important;
-      transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
     }
 
     .info-panel.drawer-open,
     .sidebar.drawer-open {
-      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
     }
 
-    /* Override the desktop collapsed behavior — on mobile, drawers use transform not display */
+    /* Override the desktop collapsed behavior */
     .info-panel.collapsed,
     .sidebar.collapsed {
       display: flex;
       margin-left: 0 !important;
       margin-right: 0 !important;
+    }
+
+    /* Hide drawer handle */
+    .drawer-handle {
+      display: none !important;
     }
 
     /* --- Info Panel Drawer Tweaks --- */
@@ -1373,17 +1376,43 @@
     /* --- Sidebar Drawer Tweaks --- */
     .sidebar {
       background: var(--bg-panel);
+      display: block !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .drawer-sticky-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--surface);
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-panel);
+    }
+
+    .drawer-sticky-title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    .drawer-sticky-header .drawer-close-btn {
+      position: static;
     }
 
     .sidebar .team-bar {
-      padding-top: 16px;
-      padding-right: 48px;
+      padding-top: 8px;
+      padding-right: 16px;
     }
 
     .sidebar .sidebar-content {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow-y: visible;
     }
 
     /* --- Hide Desktop Toggle Buttons --- */
@@ -1395,6 +1424,65 @@
     /* --- Hide Desktop Theme Picker --- */
     .theme-picker {
       display: none !important;
+    }
+
+    /* --- Compact attempt cards on mobile --- */
+    .attempt-card {
+      padding: 8px 10px;
+      margin-bottom: 4px;
+    }
+
+    .attempt-header {
+      margin-bottom: 4px;
+    }
+
+    .attempt-details {
+      margin-bottom: 4px;
+      gap: 8px;
+    }
+
+    .attempt-score {
+      font-size: 0.95rem;
+    }
+
+    .attempt-stat-value {
+      font-size: 0.75rem;
+    }
+
+    /* --- Compact session summary on mobile --- */
+    .session-summary {
+      padding: 6px 12px;
+      position: sticky;
+      bottom: 0;
+      background: var(--bg-panel);
+      z-index: 5;
+      border-top: 1px solid var(--surface);
+    }
+
+    .summary-row {
+      padding: 2px 0;
+    }
+
+    .summary-label {
+      font-size: 0.65rem;
+    }
+
+    .summary-value {
+      font-size: 0.8rem;
+    }
+
+    .summary-value.highlight {
+      font-size: 1rem;
+    }
+
+    /* --- Compact chart on mobile --- */
+    .chart-container {
+      padding: 4px 0 8px;
+      margin-bottom: 4px;
+    }
+
+    .chart-svg {
+      max-height: 80px;
     }
 
     /* --- Main Area --- */
@@ -1417,8 +1505,14 @@
 
     .panel-left {
       border-right: none;
-      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: none;
       position: relative;
+      order: 2;
+    }
+
+    .main-area .panel:not(.panel-left) {
+      order: 1;
     }
 
     /* --- Ring Wrappers: sized to fit --- */
@@ -1438,15 +1532,34 @@
     }
 
     .panel-left::after {
-      content: 'tap to count';
+      display: none;
+    }
+
+    .panel:not(.panel-left) {
+      position: relative;
+    }
+
+    .mobile-reset-btn {
       position: absolute;
-      bottom: 0.8rem;
+      bottom: 0.6rem;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 0.65rem;
-      color: var(--text-dimmest);
+      background: none;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: 0.6rem;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.1em;
+      padding: 4px 14px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-reset-btn:active {
+      background: var(--border);
+      color: var(--text);
     }
 
     /* --- Ring label spacing --- */
@@ -1572,6 +1685,161 @@
       color: var(--text-muted);
       border-color: var(--text-dimmest);
     }
+
+    /* --- Landscape: Narrow phones (e.g. iPhone SE at 667px) --- */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .main-area {
+        flex-direction: row;
+        padding-bottom: 0;
+      }
+
+      .panel-left {
+        order: 1;
+        border-top: none;
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+      }
+
+      .main-area .panel:not(.panel-left) {
+        order: 2;
+      }
+
+      .ring-wrapper {
+        width: min(30vh, 140px) !important;
+        height: min(30vh, 140px) !important;
+      }
+
+      .number {
+        font-size: clamp(2rem, 8vh, 4rem);
+      }
+
+      .mobile-nav {
+        display: none !important;
+      }
+
+      .panel-left::after {
+        display: none;
+      }
+
+      .go-countdown {
+        font-size: clamp(4rem, 20vh, 8rem);
+      }
+
+      .ring-label,
+      .label {
+        margin-top: 0.2rem;
+        font-size: 0.65rem;
+      }
+
+      .ring-below {
+        margin-top: 0.2rem;
+      }
+
+      /* --- Side panels instead of modals in landscape --- */
+      .info-panel,
+      .sidebar {
+        top: 0;
+        left: auto;
+        right: auto;
+        bottom: 0;
+        max-height: 100vh !important;
+        max-height: 100dvh !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        width: 280px !important;
+        border-radius: 0;
+        transform: translateX(0);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .info-panel {
+        left: 0;
+        border-right: 1px solid var(--border);
+        border-left: none;
+        border-top: none;
+        border-bottom: none;
+      }
+
+      .sidebar {
+        right: 0;
+        border-left: 1px solid var(--border);
+        border-right: none;
+        border-top: none;
+        border-bottom: none;
+      }
+
+      .info-panel.drawer-open,
+      .sidebar.drawer-open {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Side panels: single scroll container, everything flows */
+      .info-panel,
+      .sidebar {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        display: block !important;
+      }
+
+      /* Info panel: header scrolls with content */
+      .info-panel .info-header {
+        padding-top: 12px;
+        padding-bottom: 8px;
+        padding-right: 20px;
+      }
+
+      .info-panel .info-content {
+        overflow-y: visible;
+      }
+
+      /* Sidebar: flatten all children into single scroll */
+      .sidebar .team-bar {
+        display: flex;
+        width: 100%;
+        box-sizing: border-box;
+        padding-right: 16px;
+      }
+
+      .sidebar .sidebar-content {
+        flex: none;
+        overflow-y: visible;
+      }
+
+      .chart-container {
+        touch-action: pan-y;
+      }
+
+      .session-summary {
+        position: static !important;
+      }
+
+      /* Hide drawer handle and close button in side panel mode */
+      .drawer-handle,
+      .drawer-close-btn {
+        display: none !important;
+      }
+
+      /* Re-show desktop edge toggles (hidden by 768px block) */
+      .info-toggle,
+      .sidebar-toggle {
+        display: block !important;
+        font-size: 0.7rem;
+        padding: 8px 4px;
+      }
+
+      /* Keep toggles at edge */
+      .info-toggle.open {
+        left: 0;
+      }
+
+      .sidebar-toggle.open {
+        right: 0;
+      }
+    }
   }
 
   /* ===== RESPONSIVE: SMALL PHONE (max-width: 480px) ===== */
@@ -1582,6 +1850,56 @@
     }
     .number {
       font-size: clamp(2.5rem, 10vw, 5rem);
+    }
+
+    /* Landscape override for very small phones */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .ring-wrapper {
+        width: min(30vh, 140px) !important;
+        height: min(30vh, 140px) !important;
+      }
+    }
+  }
+
+  /* ===== RESPONSIVE: LANDSCAPE — WIDE PHONES (769px+, short viewport) ===== */
+  @media (orientation: landscape) and (max-height: 500px) and (min-width: 769px) {
+    .ring-wrapper {
+      width: min(30vh, 140px);
+      height: min(30vh, 140px);
+    }
+
+    .number {
+      font-size: clamp(2rem, 8vh, 4rem);
+    }
+
+    .go-countdown {
+      font-size: clamp(4rem, 20vh, 8rem);
+    }
+
+    .ring-label,
+    .label {
+      margin-top: 0.2rem;
+      font-size: 0.65rem;
+    }
+
+    .ring-below {
+      margin-top: 0.2rem;
+    }
+  }
+
+  /* ===== RESPONSIVE: LANDSCAPE — TEAM MODAL SCROLL FIX ===== */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .team-modal-overlay {
+      align-items: flex-start;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 0;
+    }
+
+    .team-modal {
+      max-height: none;
+      margin: auto;
+      flex-shrink: 0;
     }
   }
 </style>
@@ -1680,7 +1998,7 @@
   <div class="ring-wrapper">
     <div id="counter" class="number">0</div>
   </div>
-  <div class="ring-label">Counter</div>
+  <div class="ring-label" id="counter-label">Counter</div>
   <div class="hints">
     <span><kbd>Tap</kbd> / <kbd>Space</kbd> Count</span>
   </div>
@@ -1702,6 +2020,7 @@
     <span><kbd>S</kbd> Start / Pause</span>
     <span id="reset-hint" style="display:none;"><kbd>R</kbd> Reset</span>
   </div>
+  <button class="mobile-reset-btn" id="mobile-reset-btn" style="display:none;">Reset</button>
 </div>
 </div>
 
@@ -1794,15 +2113,12 @@
 <!-- Mobile Navigation Bar -->
 <div class="mobile-nav" id="mobile-nav">
   <button class="mobile-nav-btn" id="mobile-info-btn">
-    <span class="mobile-nav-icon">&#8505;</span>
     <span class="mobile-nav-label">Info</span>
   </button>
   <button class="mobile-nav-btn mobile-nav-theme" id="mobile-theme-btn">
     <span class="mobile-theme-dot" id="mobile-theme-dot"></span>
-    <span class="mobile-nav-label">Theme</span>
   </button>
   <button class="mobile-nav-btn" id="mobile-scores-btn">
-    <span class="mobile-nav-icon">&#9733;</span>
     <span class="mobile-nav-label">Scores</span>
   </button>
 </div>
@@ -2147,23 +2463,42 @@
     var mobileThemeDot = document.getElementById('mobile-theme-dot');
     var activeDrawer = null;
 
-    // Add drawer handles and close buttons to both panels
-    function addDrawerChrome(panel) {
+    // Add drawer chrome to panels
+    function addDrawerChrome(panel, useStickyHeader) {
       var handle = document.createElement('div');
       handle.className = 'drawer-handle';
       panel.insertBefore(handle, panel.firstChild);
 
-      var closeBtn = document.createElement('button');
-      closeBtn.className = 'drawer-close-btn';
-      closeBtn.innerHTML = '&times;';
-      closeBtn.setAttribute('aria-label', 'Close');
-      closeBtn.addEventListener('click', closeDrawer);
+      if (useStickyHeader) {
+        // Sticky header with title and close button
+        var header = document.createElement('div');
+        header.className = 'drawer-sticky-header';
+        var title = document.createElement('span');
+        title.className = 'drawer-sticky-title';
+        title.textContent = 'Scores';
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'drawer-close-btn';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.setAttribute('aria-label', 'Close');
+        closeBtn.addEventListener('click', closeDrawer);
+        header.appendChild(title);
+        header.appendChild(closeBtn);
+        panel.insertBefore(header, panel.firstChild);
+      } else {
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'drawer-close-btn';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.setAttribute('aria-label', 'Close');
+        closeBtn.addEventListener('click', closeDrawer);
+        panel.appendChild(closeBtn);
+      }
       panel.style.position = 'fixed';
-      panel.appendChild(closeBtn);
     }
 
-    addDrawerChrome(infoPanel);
-    addDrawerChrome(sidebar);
+    addDrawerChrome(infoPanel, false);
+    addDrawerChrome(sidebar, true);
+
+    var mobileNav = document.getElementById('mobile-nav');
 
     function openDrawer(panel, btnEl) {
       if (activeDrawer === panel) {
@@ -2179,6 +2514,7 @@
       backdrop.classList.add('visible');
       panel.classList.add('drawer-open');
       btnEl.classList.add('active');
+      mobileNav.style.display = 'none';
       document.body.style.overflow = 'hidden';
     }
 
@@ -2189,6 +2525,7 @@
       mobileInfoBtn.classList.remove('active');
       mobileScoresBtn.classList.remove('active');
       activeDrawer = null;
+      mobileNav.style.display = '';
       document.body.style.overflow = '';
     }
 
@@ -2201,6 +2538,28 @@
     });
 
     backdrop.addEventListener('click', closeDrawer);
+
+    // --- Close drawers on rotation to landscape ---
+    window.matchMedia('(orientation: landscape)').addEventListener('change', function(e) {
+      if (e.matches) closeDrawer();
+    });
+
+    // --- Wire desktop toggles to drawer system for landscape ---
+    var landscapeMq = window.matchMedia('(orientation: landscape) and (max-height: 500px)');
+
+    infoToggle.addEventListener('click', function(e) {
+      if (landscapeMq.matches) {
+        e.stopImmediatePropagation();
+        if (activeDrawer === infoPanel) { closeDrawer(); } else { openDrawer(infoPanel, mobileInfoBtn); }
+      }
+    }, true);
+
+    sidebarToggle.addEventListener('click', function(e) {
+      if (landscapeMq.matches) {
+        e.stopImmediatePropagation();
+        if (activeDrawer === sidebar) { closeDrawer(); } else { openDrawer(sidebar, mobileScoresBtn); }
+      }
+    }, true);
 
     // --- Theme Cycling ---
     var themes = ['', 'midnight', 'ember', 'forest', 'violet', 'rose', 'mono'];
@@ -2597,7 +2956,7 @@
     document.getElementById('summary-teamwork-row').style.display = hasTeamwork ? '' : 'none';
 
     var valid = currentSession().attempts.filter(function(a) { return !a.scratch; });
-    document.getElementById('summary-attempts').textContent = valid.length + ' / ' + currentSession().attempts.length;
+    document.getElementById('summary-attempts').textContent = valid.length + '/' + currentSession().attempts.length;
     if (valid.length === 0) {
       document.getElementById('summary-avg-count').textContent = '—';
       document.getElementById('summary-avg-creativity').textContent = '—';
@@ -2659,6 +3018,12 @@
   // --- Counter ---
   var counterPanel = document.querySelector('.panel-left');
   var counterRing = counterPanel.querySelector('.ring-wrapper');
+  var counterLabel = document.getElementById('counter-label');
+
+  // On mobile, show "Tap to count" initially
+  if (isMobile) {
+    counterLabel.textContent = 'Tap to count';
+  }
 
   function incrementCounter() {
     if (timerDone) return;
@@ -2668,6 +3033,9 @@
     }
     count++;
     counterEl.textContent = count;
+    if (isMobile && counterLabel.textContent !== 'Counter') {
+      counterLabel.textContent = 'Counter';
+    }
 
     counterEl.classList.remove('bump');
     counterRing.classList.remove('pop');
@@ -2690,6 +3058,9 @@
     counterEl.classList.remove('flash');
     void counterEl.offsetWidth;
     counterEl.classList.add('flash');
+    if (isMobile) {
+      counterLabel.textContent = 'Tap to count';
+    }
   }
 
   // --- Timer ---
@@ -2713,12 +3084,31 @@
   }
 
   var resetHint = document.getElementById('reset-hint');
+  var mobileResetBtn = document.getElementById('mobile-reset-btn');
+
+  function showMobileReset() {
+    if (isMobile) mobileResetBtn.style.display = '';
+  }
+
+  function hideMobileReset() {
+    if (isMobile) mobileResetBtn.style.display = 'none';
+  }
+
+  if (isMobile) {
+    mobileResetBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      resetCounter();
+      resetTimer();
+      hideMobileReset();
+    });
+  }
 
   function startTimer() {
     if (timerDone || totalSeconds <= 0) return;
     timerRunning = true;
     ringProgress.style.visibility = '';
     resetHint.style.display = '';
+    showMobileReset();
     startTimerPulse();
     timerInterval = setInterval(function() {
       timerSeconds--;
@@ -2748,6 +3138,7 @@
     ringProgress.style.strokeDashoffset = RING_CIRCUMFERENCE;
     ringProgress.style.visibility = 'hidden';
     resetHint.style.display = 'none';
+    hideMobileReset();
     resetCounter();
   }
 
